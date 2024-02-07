@@ -1,0 +1,21 @@
+.conteiners{
+    width: 100%;
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 0 20px; 
+}
+
+.main__container {
+    text-align: start;
+}
+
+.main__h2 {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 40px;
+    line-height: 42px;
+    color: #000000;
+    margin-bottom: 30px;
+  }

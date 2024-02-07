@@ -1,0 +1,34 @@
+.wrapper {
+    width: 100%;
+    background-color:#009EE4;
+    display: flex;
+    justify-content: center;
+}
+
+.main_head {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    width: 100%;
+    height: 80px;
+    max-width: 1160px;
+}
+
+.main_button {
+    cursor: pointer;
+    box-sizing: border-box;
+    text-align: center;
+    width: 224px;
+    height: 40px;
+    background-color:#009EE4;
+    border: 1px solid white;
+    border-radius: 10px;
+    color: white;
+    font-size: 16px;
+    transition: all .3s;
+}
+
+.main_button:hover {
+    background-color:#2eb3ec;
+  }
+  
