@@ -1,4 +1,5 @@
 .wrapper {
+    position: relative;
     width: 100%;
     background-color:#009EE4;
     display: flex;
@@ -30,5 +31,114 @@
 
 .main_button:hover {
     background-color:#2eb3ec;
-  }
-  
+}
+
+/* Модальное окно */
+
+.modal {
+    position: fixed; /* изменено с position: absolute */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(5px);
+    background-color: rgba(4, 108, 206, 0.15);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modalContent {
+    padding-top: 42px;
+    padding-bottom: 42px;
+    width: 370px;
+    height: auto;
+    background-color: #fff;
+    border: 1px solid #fff;
+    border-radius: 10px;
+    position: relative;
+    display: flex;
+    gap: 25px;
+}
+
+.modal_form {
+    width: 370px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.closeButton {
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 50px;
+    height: 50px;
+    z-index: 9999;
+}
+
+.modal_form_input {
+    width: 270px;
+    height: 40px;
+    color: #878787;
+    padding-left: 5px;
+    border: 1px solid #D9D9D9;
+    font-size: 18px;
+    border: transparent;
+    border-bottom: 1px solid #D9D9D9;
+}
+
+.modal_form_input::placeholder {
+    color: #D9D9D9;
+}
+
+.modal_form_button {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.modal_button {
+    cursor: pointer;
+    width: 280px;
+    height: 50px;
+    box-sizing: border-box;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background-color: #009EE4;
+    color: white;
+    font-size: 18px;
+    transition: all .3s;
+}
+
+.modal_button_two {
+    cursor: pointer;
+    width: 280px;
+    height: 50px;
+    box-sizing: border-box;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    color: rgba(0, 0, 0, 0.5);
+    font-size: 18px;
+    transition: all .3s;
+}
+
+/* Наведение */
+
+.modal_button:hover {
+    background-color: #0080C1;
+}
+
+.modal_button_two:hover {
+    background: rgba(0, 162, 255, 0.469);
+    color: #fff;
+}
