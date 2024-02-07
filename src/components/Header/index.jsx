@@ -1,16 +1,20 @@
 import styles from './styles.module.css';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import exits from '../../img/main_img/exit.svg'
 import hover from '../../img/main_img/hover_exit.svg'
 import logo from '../../img/main_img/logo_modal.svg'
+import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
+  const navigate = useNavigate();
   // Стейт для открытия модального окна
   const [openModal, setOpenModal] = useState(false);
   // Стейт для отслеживания наведения курсора
   const [isHovered, setIsHovered] = useState(false);
-    // Стейт формы регистрации
-    const [isOpenFormRegistration, setIsOpenFormRegistration] = useState(false);
+  // Стейт формы регистрации
+  const [isOpenFormRegistration, setIsOpenFormRegistration] = useState(false);
+  // Для закрытия окна при клике вне окна
+  const modalRef = useRef();
 
   // Открывает модальное окно
   const openModalClick = () => {
@@ -32,8 +36,24 @@ const Header = () => {
   }
   // Показ формы регистрации
   const hendleClickOpenFormReg = () => {
-    setIsOpenFormRegistration(true);
+    if (isOpenFormRegistration) {
+      navigate('/profile');
+    } else {
+      setIsOpenFormRegistration(true);
+    }
   }
+  // Закрывает модальное окно при клике за его пределами
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        closeModal();
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [modalRef]);
 
   return (
     <div className={styles.wrapper}>
@@ -41,8 +61,8 @@ const Header = () => {
         <button className={styles.main_button} onClick={openModalClick}>Вход в личный кабинет</button>
       </div>
       {openModal && (
-        <div className={styles.modal}>
-          <div className={styles.modalContent}>
+        <div className={styles.modal} >
+          <div className={styles.modalContent} ref={modalRef}>
             <form className={styles.modal_form}>
               <img src={logo} alt='logo'/>
               <input className={styles.modal_form_input} type='text' placeholder='email'></input>
@@ -70,9 +90,9 @@ const Header = () => {
             </form>
             <img
               src={isHovered ? hover : exits}
-              onClick={closeModal}
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
+              onClick={closeModal}
               className={styles.closeButton}
               alt='exit'
             />

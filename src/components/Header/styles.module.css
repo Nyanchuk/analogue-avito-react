@@ -139,6 +139,6 @@
 }
 
 .modal_button_two:hover {
-    background: rgba(0, 162, 255, 0.469);
-    color: #fff;
+    background: #00a0e492;
+    color: white;
 }
