@@ -1,0 +1,50 @@
+.conteiners{
+    width: 100%;
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 0 20px; 
+}
+
+.main__container {
+    text-align: start;
+}
+
+.main__h3 {
+    text-align: start;
+    font-weight: 500;
+    font-size: 32px;
+    padding-bottom: 10px;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+}
+
+.main__info {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 60px;
+}
+
+.main__info_picture_general {
+
+}
+
+
+.main__info_bas {
+    width: 480px;
+    height: 480px;
+    box-sizing: border-box;
+    border: 1px solid transparent;
+    background-color: #F0F0F0;
+}
+
+.addition {
+    width: 88px;
+    height: 88px;
+    box-sizing: border-box;
+    border: 1px solid transparent;
+    background-color: #F0F0F0;
+}

@@ -23,7 +23,7 @@ export const Myprofile = () => {
           <div className={styles.main__container_profile}>
             <div className={styles.main__container_profile_img}>
               <img className={styles.main__container_img} src={user} alt='photo user'/>
-              <span>Заменить</span>
+              <span >Заменить</span>
             </div>
             <div className={styles.main__container_user}>
               <div className={styles.main__container_info_user}>
