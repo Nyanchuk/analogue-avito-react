@@ -2,19 +2,25 @@ import styles from './styles.module.css';
 import Header from '../../components/Header';
 import Search from '../../components/Search';
 import ProductCard from '../../components/ProductCard';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { getAllAds } from '../../api';
 
 export const Main = () => {
-  const [products, setProducts] = useState([
-    { id: 1, title: "Ракетка для большого тенниса Triumph Pro ST", price: "2200 ₽", place: "Санкт Петербург", date: "Сегодня 10:45" },
-    { id: 2, title: "Ракетка для большого тенниса Triumph Pro ST", price: "2200 ₽", place: "Санкт Петербург", date: "Сегодня 10:45" },
-    { id: 3, title: "Ракетка для большого тенниса Triumph Pro ST", price: "2200 ₽", place: "Санкт Петербург", date: "Сегодня 10:45" },
-    { id: 4, title: "Ракетка для большого тенниса Triumph Pro ST", price: "2200 ₽", place: "Санкт Петербург", date: "Сегодня 10:45" },
-    { id: 5, title: "Ракетка для большого тенниса Triumph Pro ST", price: "2200 ₽", place: "Санкт Петербург", date: "Сегодня 10:45" },
-    { id: 6, title: "Ракетка для большого тенниса Triumph Pro ST", price: "2200 ₽", place: "Санкт Петербург", date: "Сегодня 10:45" },
-    { id: 7, title: "Ракетка для большого тенниса Triumph Pro ST", price: "2200 ₽", place: "Санкт Петербург", date: "Сегодня 10:45" },
-    { id: 8, title: "Ракетка для большого тенниса Triumph Pro ST", price: "2200 ₽", place: "Санкт Петербург", date: "Сегодня 10:45" },
-  ]);
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getAllAds();
+        setProducts(data);
+        console.log(data)
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
   return (
     <div className={styles.container}>
       <Header />
