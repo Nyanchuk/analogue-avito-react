@@ -5,11 +5,15 @@ import Return from '../../components/Return';
 import user from '../../img/main_img/photo_user.png';
 import exits from '../../img/main_img/exit.svg'
 import hover from '../../img/main_img/hover_exit.svg'
-import { useParams } from 'react-router-dom';
+import notImage from '../../img/main_img/no-pictures.png'
+import { Link, useParams } from 'react-router-dom';
 import { getAds } from '../../api';
 import { getAllCommets } from '../../api';
+import { useSelector } from 'react-redux';
 
 export const Advpage = () => {
+  // REDUX
+  const isTokenGlobal = useSelector(state => state.product.tokenExists);
   // Получаем id объявления
   const { id } = useParams();
   // Стейт для изменения контента
@@ -28,6 +32,13 @@ export const Advpage = () => {
   const [formattedSellsFromDate, setFormattedSellsFromDate] = useState('');
   // Стейт для числа отзывов
   const [ totalComments, setTotalComments ] = useState('');
+  // Стейт для сокрытия номера
+  const [showPhoneNumber, setShowPhoneNumber] = useState(false);
+
+
+// После успешной аутентификации и получения токена
+// localStorage.setItem('authToken', token);
+  
 
   // Событие при наведении
   const handleMouseEnter = () => {
@@ -89,7 +100,7 @@ export const Advpage = () => {
     const fetchData = async () => {
       try {
         const data = await getAllCommets(id);
-        setComments([data]);
+        setComments(data);
         console.log(data);
         const totalComments = data.length;
         setTotalComments(totalComments);
@@ -121,19 +132,25 @@ export const Advpage = () => {
         {products.map(product => (
           <div key={product.id} className={styles.main}>
             <div className={styles.main__info}>
-                <div className={styles.main__info_picture}>
-                    <div className={styles.main__info_picture_general}>
-                        <img className={styles.main__info_bas}/>
-                        <div className={styles.main__info_addition}>
-                          <img className={styles.addition} />
-                          <img className={styles.addition} />
-                          <img className={styles.addition} />
-                          <img className={styles.addition} />
-                          <img className={styles.addition} />
-                        </div>
-                    </div>
-                </div>
-                <div className={styles.main__info_text}>
+              <div className={styles.main__info_picture}>
+                <div className={styles.main__info_picture_general}>
+                  {product.images[0] && product.images[0].url ? (
+                    <img className={styles.main__info_bas} src={`http://localhost:8090/${product.images[0].url}`} alt='photo product'/>
+                  ) : (
+                    <img src={notImage} alt="product" className={styles.main__info_bas}/>
+                  )}
+                  <div className={styles.main__info_addition}>
+                    {product.images.slice(1).map((image, index) => (
+                      image.url ? (
+                        <img key={index} className={styles.addition} src={`http://localhost:8090/${image.url}`} alt={`photo ${index + 2}`} />
+                      ) : (
+                        <div key={index}>Картинка отсутствует</div>
+                      )
+                    ))}
+                  </div>
+            </div>
+          </div>
+            <div className={styles.main__info_text}>
                     <div className={styles.main__info_text_product}>
                       <div className={styles.main__h3}>{product.title}</div>
                       <div className={styles.main__detailed}>
@@ -156,23 +173,32 @@ export const Advpage = () => {
                     <div className={styles.main__info_text_buttons}>
                         <div className={styles.main__h3}>{product.price} ₽</div>
                         <div className={styles.main__product_buttons}>
-                          <div className={`${styles.main_button} ${styles.update}`}>Показать телефон <br /> <span className={styles.main_button_num}>{product.user.phone}</span></div>
+                        <div className={`${styles.main_button} ${styles.update}`} onClick={() => setShowPhoneNumber(true)}>
+                          Показать телефон <br /> 
+                          <span className={styles.main_button_num}>
+                            {showPhoneNumber ? product.user.phone : `${product.user.phone.substring(0, 2)} ❉ ❉ ❉ ❉ ❉ ❉ ❉ ❉ ❉`}
+                          </span>
+                        </div>
                         </div>
                     </div>
                     <div className={styles.main__info_text_seller}>
-                    <img className={styles.main__container_img} src={user} alt='photo user'/>
+                    {product.user.avatar ? (
+                      <img className={styles.main__container_img} src={`http://localhost:8090/${product.user.avatar}`} alt='photo user'/>
+                    ) : (
+                      <img className={styles.main__container_img} src={user} alt='photo user'/>
+                    )}
                       <div className={styles.main__detailed}>
-                        <span style={{color: "#009EE4", fontWeight: "bold"}}>{product.user.name}</span>
+                        <Link to={`/product/${product.id}/seller/${product.user.id}`} style={{color: "#009EE4", fontWeight: "bold"}}>{product.user.name}</Link>
                         <span>Продает товары с {formattedSellsFromDate}</span>
                       </div>
                     </div>
-                </div>
             </div>
+          </div>
             <div className={styles.main__container}>
-                <div className={styles.main__h3}>Описание товара</div>
-                <div className={styles.main__content}>
-                  {product.description}
-                </div>
+                  <div className={styles.main__h3}>Описание товара</div>
+                  <div className={styles.main__content}>
+                    {product.description}
+                  </div>
             </div>
           </div>
         ))}
@@ -186,74 +212,30 @@ export const Advpage = () => {
                   <span>Добавить отзыв</span>
                   <textarea className={styles.modal_form_input} type='text' placeholder='Введите отзыв'/>
                 </div>
-                <button className={`${styles.main_button} ${styles.save}`}>Опубликовать</button>
+                <button className={`${styles.main_button} ${styles.save}`} disabled={!isTokenGlobal}>
+                Опубликовать
+              </button>
                 <div className={styles.modal_form_block}>
                   <div className={styles.modal_form_textarea}>
-                    <div className={styles.modal_block}>
+                  {comments.map(comment => 
+                    <div key={comment.id} className={styles.modal_block}>
+                      {comment.author.avatar ? (
+                      <img className={styles.main__container_img} src={`http://localhost:8090/${comment.author.avatar}`} alt='photo user'/>
+                    ) : (
                       <img className={styles.main__container_img} src={user} alt='photo user'/>
-                      <div className={styles.modal_block_info}>
-                        <div className={styles.modal_block_author}>
-                          <span>Олег</span>
-                          <span>14 августа</span>
+                    )}
+                        <div className={styles.modal_block_info}>
+                            <div className={styles.modal_block_author}>
+                              <span style={{fontWeight: 'bold'}}>{comment.author.name}</span>
+                              <span style={{color: '#5F5F5F'}}>{new Date(comment.created_on).toLocaleDateString()}</span>
+                            </div>
+                            <div className={styles.modal_block_coment}>
+                                <span style={{fontWeight: 'bold'}}>Комментарий</span>
+                                <span>{comment.text}</span>
+                            </div>
                         </div>
-                        <div className={styles.modal_block_coment}>
-                          <span>Комментарий</span>
-                          <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam recusandae, harum reiciendis inventore natus animi!</span>
-                        </div>
-                      </div>
                     </div>
-                    <div className={styles.modal_block}>
-                      <img className={styles.main__container_img} src={user} alt='photo user'/>
-                      <div className={styles.modal_block_info}>
-                        <div className={styles.modal_block_author}>
-                          <span>Олег</span>
-                          <span>14 августа</span>
-                        </div>
-                        <div className={styles.modal_block_coment}>
-                          <span>Комментарий</span>
-                          <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia provident velit ratione quasi harum inventore ut nisi, dolorem quas veniam. Quo quidem cum harum cupiditate doloremque, ex distinctio similique tenetur eligendi odit hic. Neque, temporibus?</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className={styles.modal_block}>
-                      <img className={styles.main__container_img} src={user} alt='photo user'/>
-                      <div className={styles.modal_block_info}>
-                        <div className={styles.modal_block_author}>
-                          <span>Олег</span>
-                          <span>14 августа</span>
-                        </div>
-                        <div className={styles.modal_block_coment}>
-                          <span>Комментарий</span>
-                          <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia provident velit ratione quasi harum inventore ut nisi, dolorem quas veniam. Quo quidem cum harum cupiditate doloremque, ex distinctio similique tenetur eligendi odit hic. Neque, temporibus?</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className={styles.modal_block}>
-                      <img className={styles.main__container_img} src={user} alt='photo user'/>
-                      <div className={styles.modal_block_info}>
-                        <div className={styles.modal_block_author}>
-                          <span>Олег</span>
-                          <span>14 августа</span>
-                        </div>
-                        <div className={styles.modal_block_coment}>
-                          <span>Комментарий</span>
-                          <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia provident velit ratione quasi harum inventore ut nisi, dolorem quas veniam. Quo quidem cum harum cupiditate doloremque, ex distinctio similique tenetur eligendi odit hic. Neque, temporibus?</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className={styles.modal_block}>
-                      <img className={styles.main__container_img} src={user} alt='photo user'/>
-                      <div className={styles.modal_block_info}>
-                        <div className={styles.modal_block_author}>
-                          <span>Олег</span>
-                          <span>14 августа</span>
-                        </div>
-                        <div className={styles.modal_block_coment}>
-                          <span>Комментарий</span>
-                          <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quia provident velit ratione quasi harum inventore ut nisi, dolorem quas veniam. Quo quidem cum harum cupiditate doloremque, ex distinctio similique tenetur eligendi odit hic. Neque, temporibus?</span>
-                        </div>
-                      </div>
-                    </div>
+                  )} 
                   </div>
                 </div>
               </form>
@@ -268,7 +250,7 @@ export const Advpage = () => {
           </div>
         </div>
       )}
-    </div>
+      </div>
     )
   }
   

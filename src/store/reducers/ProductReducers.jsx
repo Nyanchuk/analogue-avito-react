@@ -1,12 +1,19 @@
+import { SET_TOKEN_EXISTS } from "../actions/types/productTypes";
 
 const initialState = {
-
-};
-
-export default function productReducers(state = initialState, action) {
-  switch (action.type) {
-
-    default:
-      return state;
-  }
-}
+    tokenExists: false,
+  };
+  
+  const reducer = (state = initialState, action) => {
+    switch (action.type) {
+      case SET_TOKEN_EXISTS:
+        return {
+          ...state,
+          tokenExists: action.payload,
+        };
+      default:
+        return state;
+    }
+  };
+  
+  export default reducer;

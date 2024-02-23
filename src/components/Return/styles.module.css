@@ -1,6 +1,9 @@
 .main_search {
+    margin-top: 45px;
+    margin-bottom: 45px;
     text-decoration: none;
-    height: 140px;
+    width: auto;
+    height: 50px;
     display: flex;
     justify-content: start;
     align-items: center;
