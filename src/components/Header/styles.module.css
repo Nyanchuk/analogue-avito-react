@@ -5,7 +5,6 @@
     display: flex;
     justify-content: center;
 }
-
 .main_head {
     display: flex;
     justify-content: end;
@@ -14,7 +13,10 @@
     height: 80px;
     max-width: 1160px;
 }
-
+.main_buttons {
+    display: flex;
+    gap: 10px;
+}
 .main_button {
     cursor: pointer;
     box-sizing: border-box;
@@ -28,13 +30,28 @@
     font-size: 16px;
     transition: all .3s;
 }
-
+.main_button_exit {
+    cursor: pointer;
+    box-sizing: border-box;
+    text-align: center;
+    width: 124px;
+    height: 40px;
+    background-color:#009EE4;
+    border: 1px solid rgb(251, 198, 214);
+    border-radius: 10px;
+    color: rgb(251, 198, 214);
+    font-size: 16px;
+    transition: all .3s;
+}
+.main_button_exit:hover {
+    background-color:rgba(251, 198, 214, 0.287);
+    border: 1px solid rgb(251, 198, 214);
+    color: rgb(246, 212, 223);
+}
 .main_button:hover {
     background-color:#2eb3ec;
 }
-
 /* Модальное окно */
-
 .modal {
     position: fixed; /* изменено с position: absolute */
     top: 0;
@@ -49,7 +66,6 @@
     align-items: center;
     z-index: 9999;
 }
-
 .modalContent {
     padding-top: 42px;
     padding-bottom: 42px;
@@ -62,7 +78,6 @@
     display: flex;
     gap: 25px;
 }
-
 .modal_form {
     width: 370px;
     height: auto;
@@ -72,7 +87,6 @@
     justify-content: center;
     gap: 20px;
 }
-
 .closeButton {
     cursor: pointer;
     position: absolute;
@@ -82,7 +96,6 @@
     height: 50px;
     z-index: 9999;
 }
-
 .modal_form_input {
     width: 270px;
     height: 40px;
@@ -93,11 +106,9 @@
     border: transparent;
     border-bottom: 1px solid #D9D9D9;
 }
-
 .modal_form_input::placeholder {
     color: #D9D9D9;
 }
-
 .modal_form_button {
     margin-top: 30px;
     display: flex;
@@ -106,7 +117,6 @@
     align-items: center;
     gap: 20px;
 }
-
 .modal_button {
     cursor: pointer;
     width: 280px;
@@ -119,7 +129,6 @@
     font-size: 18px;
     transition: all .3s;
 }
-
 .modal_button_two {
     cursor: pointer;
     width: 280px;
@@ -131,13 +140,164 @@
     font-size: 18px;
     transition: all .3s;
 }
+/* Второе модальное окно */
+.modal_two {
+    position: fixed; /* изменено с position: absolute */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(5px);
+    background-color: rgba(4, 108, 206, 0.15);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+.modalContent_two {
+    width: 600px;
+    height: 800px;
+    background-color: #fff;
+    border: 1px solid #fff;
+    border-radius: 10px;
+    position: relative;
+    display: flex;
+    gap: 25px;
+}
+.modal_form_two {
+    padding: 40px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    gap: 20px;
+}
+.modal_form_title {
+    font-size: 32px;
+    font-weight: 500;
+}
+.modal_form_block {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 5px;
+}
+.modal_form_img {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 5px;
+}
+.modal_form_price {
+    outline: none;
+    width: 164px;
+    height: 50px;
+    color: #000000;
+    padding-left: 18px;
+    padding-right: 18px;
+    margin-right: 10px;
+    font-size: 16px;
+    border: transparent;
+    border: 1px solid #D9D9D9;
+    border-radius: 6px;
+}
+.currency_select {
+    outline: none;
+    padding: 5px;
+    width: 50px;
+    height: 50px;
+    color: #009EE4;
+    font-size: 18px;
+    border: 1px solid #009EE4;
+    border-radius: 6px;
+}
+.closeButton {
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 50px;
+    height: 50px;
+    z-index: 9999;
+}
+.save {
+    width: 154px;
+    height: 50px;
+}
+.modal_form_input_two {
+    outline: none;
+    width: 480px;
+    height: 50px;
+    color: #000000;
+    padding-left: 18px;
+    padding-right: 18px;
+    font-size: 16px;
+    border: transparent;
+    border: 1px solid #D9D9D9;
+    border-radius: 6px;
+}
+.modal_form_textarea {
+    outline: none;
+    resize: none;
+    font-family: 'Roboto', sans-serif;
+    font-weight: normal;
+    font-size: 16px;
+    padding: 18px;
+    width: 480px;
+    height: 200px;
+    border: 1px solid #D9D9D9;
+    border-radius: 6px;
+}
+.modal_form_textarea::placeholder {
+    color: #D9D9D9;
+}
+.modal_form_input::placeholder {
+    color: #D9D9D9;
+}
+.modal_form_price::placeholder {
+    color: #D9D9D9;
+}
+/* Стилизация бегунка прокрутки в Chrome */
+.modal_form_textarea::-webkit-scrollbar {
+    margin: 2px;
+    width: 5px; /* Ширина бегунка */
+}
 
+.modal_form_textarea::-webkit-scrollbar-thumb {
+    background-color: #009EE4;
+    border-radius: 10px;
+}
+.addition {
+    width: 88px;
+    height: 88px;
+    box-sizing: border-box;
+    border: 1px solid transparent;
+}
+.main__info_addition {
+    display: flex;
+    gap: 10px;
+}
+.main_button:disabled {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-sizing: border-box;
+    background-color: #D9D9D9;
+    border: 1px solid #D9D9D9;
+    border-radius: 10px;
+    color: white;
+    font-size: 16px;
+    transition: all 0.3s;
+    pointer-events: none;
+  }
 /* Наведение */
-
 .modal_button:hover {
     background-color: #0080C1;
 }
-
 .modal_button_two:hover {
     background: #00a0e492;
     color: white;
