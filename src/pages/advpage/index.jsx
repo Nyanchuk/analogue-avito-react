@@ -144,7 +144,12 @@ export const Advpage = () => {
             if (serverResponse.status === 201) {
               console.log('Токен обновлен')
               await getNewCommentText( id, text, accessToken);
-              // fetchData();
+              const data = await getAllCommets(id);
+              setComments(data);
+              console.log(data);
+              const totalComments = data.length;
+              setTotalComments(totalComments);
+              document.getElementById('comment').value = '';
             } else {
               setError('Ошибка при отправке комментария');
             }
