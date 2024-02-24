@@ -6,7 +6,8 @@ import logo from '../../img/main_img/logo_modal.svg'
 import add_photo from '../../img/main_img/add-image.png'
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { sendRegistrationDataToServer } from '../../api';
+import { sendAuthenticationToServer, sendRegistrationDataToServer } from '../../api';
+import { setTokenExists } from '../../store/actions/creators/productCreators';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -113,8 +114,8 @@ const Header = () => {
               city,
             });
   
-            if (serverResponse.status === 200) {
-              // Обработка успешного ответа от сервера
+            if (serverResponse.status === 201) {
+              setIsOpenFormRegistration(false);
             } else {
               setError('Ошибка при регистрации');
             }
@@ -126,6 +127,46 @@ const Header = () => {
         responce();
     }
   };
+  // Авторизация
+  const handleAuthorizUser = ( )=> {
+    const email = document.getElementById('email').value;
+    const newPassword = document.getElementById('password').value;
+    const errors = [];
+    switch(true) {
+      case !email:
+        errors.push('Введите email!');
+        break;
+      case !newPassword:
+        errors.push('Введите пароль!');
+        break;
+      default:
+        setError('');
+        const getToken = async () => {
+          try {
+            const serverResponse = await sendAuthenticationToServer({
+              password: newPassword,
+              email,
+            });
+  
+            if (serverResponse.access_token && serverResponse.refresh_token) {
+              localStorage.setItem('accessToken', serverResponse.access_token);
+              localStorage.setItem('refreshToken', serverResponse.refresh_token);
+              dispatch(setTokenExists(true));
+              closeModal();
+              // ... Другие действия после успешной аутентификации
+            } else {
+              setError('Ошибка при регистрации');
+              dispatch(setTokenExists(false));
+            }
+          } catch (error) {
+            console.log(error)
+            setError('Ошибка при отправке данных');
+          }
+        };
+        getToken();
+
+    }
+  }
 
   return (
     <div className={styles.wrapper}>
@@ -158,7 +199,7 @@ const Header = () => {
               )}
               <div className={styles.modal_form_button}>
               {isOpenFormRegistration === false && (
-                <button type="button" className={styles.modal_button} onClick={closeModal}>Войти</button>
+                <button type="button" className={styles.modal_button} onClick={handleAuthorizUser}>Войти</button>
               )}
               <button
                 type="button"

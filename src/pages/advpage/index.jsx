@@ -7,7 +7,7 @@ import exits from '../../img/main_img/exit.svg'
 import hover from '../../img/main_img/hover_exit.svg'
 import notImage from '../../img/main_img/no-pictures.png'
 import { Link, useParams } from 'react-router-dom';
-import { getAds } from '../../api';
+import { getAds, getNewCommentText, refreshAccessToken } from '../../api';
 import { getAllCommets } from '../../api';
 import { useSelector } from 'react-redux';
 
@@ -34,10 +34,8 @@ export const Advpage = () => {
   const [ totalComments, setTotalComments ] = useState('');
   // Стейт для сокрытия номера
   const [showPhoneNumber, setShowPhoneNumber] = useState(false);
-
-
-// После успешной аутентификации и получения токена
-// localStorage.setItem('authToken', token);
+  // Стейт для хранения ошибок
+  const [error, setError] = useState('');
   
 
   // Событие при наведении
@@ -123,6 +121,41 @@ export const Advpage = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [modalRef]);
+  // Оставить комментарий
+  const setCommentUser = (id) => {
+    const text = document.getElementById('comment').value;
+    const accessToken = localStorage.getItem('accessToken');
+    const refreshToken = localStorage.getItem('refreshToken');
+    const errors = [];
+    console.log(accessToken)
+    console.log(refreshToken)
+    switch(true) {
+      case !text:
+        errors.push('Введите текст!');
+        break;
+      default:
+        setError('');
+        const getNewToken = async () => {
+          try {
+            const serverResponse = await refreshAccessToken({
+              accessToken,
+              refreshToken,
+            });
+            if (serverResponse.status === 201) {
+              console.log('Токен обновлен')
+              
+              getNewCommentText({id, text});
+            } else {
+              setError('Ошибка при отправке комментария');
+            }
+          } catch (error) {
+            console.log(error)
+            setError('Ошибка при отправке данных');
+          }
+        };
+        getNewToken();
+      }
+  };
   
     return (
       <div>
@@ -210,9 +243,9 @@ export const Advpage = () => {
                 <span className={styles.modal_form_title}>Отзывы о товаре</span>
                 <div className={styles.modal_form_block}>
                   <span>Добавить отзыв</span>
-                  <textarea className={styles.modal_form_input} type='text' placeholder='Введите отзыв'/>
+                  <textarea id='comment' className={styles.modal_form_input} type='text' placeholder='Введите отзыв'/>
                 </div>
-                <button className={`${styles.main_button} ${styles.save}`} disabled={!isTokenGlobal}>
+                <button type="button" className={`${styles.main_button} ${styles.save}`} disabled={!isTokenGlobal} onClick={setCommentUser}>
                 Опубликовать
               </button>
                 <div className={styles.modal_form_block}>

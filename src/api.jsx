@@ -50,6 +50,7 @@ export const getAllCommets = async (id) => {
 };
 // Регистрация пользователя
 export const sendRegistrationDataToServer = async ({password, role, email, name, surname, phone, city}) => {
+  console.log(password, role, email, name, surname, phone, city)
   try {
     const response = await fetch(`${host}auth/register`, {
       method: 'POST',
@@ -63,8 +64,85 @@ export const sendRegistrationDataToServer = async ({password, role, email, name,
         name: name,
         surname: surname,
         phone: phone,
-        city: city,
-        id: 0
+        city: city
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Ошибка при отправке данных на сервер");
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+// Аутентификация пользователя
+export const sendAuthenticationToServer = async ({password, email}) => {
+  try {
+    const response = await fetch(`${host}auth/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        password: password,
+        email: email,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Ошибка при отправке данных на сервер");
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+// Обновление токена
+export const refreshAccessToken = async ({ accessToken, refreshToken }) => {
+  try {
+    const response = await fetch(`${host}auth/login`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ access_token: accessToken, refresh_token: refreshToken }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Ошибка при обновлении токена");
+    }
+
+    const data = await response.json();
+    if (data.access_token && data.refresh_token) {
+      localStorage.setItem('accessToken', data.access_token);
+      localStorage.setItem('refreshToken', data.refresh_token);
+    }
+    else {
+      throw new Error("Токен не был получен после обновления");
+    }
+    return {
+      status: response.status,
+      access_token: data.access_token,
+      refresh_token: data.refresh_token,
+    };
+  } catch (error) {
+    console.error(error);
+    // Логика для обработки ошибки обновления токена
+  }
+};
+// Отправка комментария
+export const getNewCommentText = async ({id, text}) => {
+  try {
+    const response = await fetch(`${host}auth/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        text: text,
       }),
     });
 
