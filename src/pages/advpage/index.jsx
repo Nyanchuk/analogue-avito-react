@@ -121,7 +121,7 @@ export const Advpage = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [modalRef]);
-  // Обновление токена
+  // Обновление токена + создание нового комментария
   const setCommentUser = (id) => {
     const text = document.getElementById('comment').value;
     const accessToken = localStorage.getItem('accessToken');
@@ -214,7 +214,7 @@ export const Advpage = () => {
                         <div className={`${styles.main_button} ${styles.update}`} onClick={() => setShowPhoneNumber(true)}>
                           Показать телефон <br /> 
                           <span className={styles.main_button_num}>
-                            {showPhoneNumber ? product.user.phone : `${product.user.phone.substring(0, 2)} ❉ ❉ ❉ ❉ ❉ ❉ ❉ ❉ ❉`}
+                          {showPhoneNumber ? (product.user.phone ? product.user.phone : '') : (product.user.phone ? `${product.user.phone.substring(0, 2)} ❉ ❉ ❉ ❉ ❉ ❉ ❉ ❉ ❉` : '')}
                           </span>
                         </div>
                         </div>
