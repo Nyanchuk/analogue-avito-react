@@ -134,11 +134,12 @@ export const refreshAccessToken = async ({ accessToken, refreshToken }) => {
   }
 };
 // Отправка комментария
-export const getNewCommentText = async ({id, text}) => {
+export const getNewCommentText = async (id, text, accessToken) => {
   try {
-    const response = await fetch(`${host}auth/login`, {
+    const response = await fetch(`${host}ads/${id}/comments`, {
       method: 'POST',
       headers: {
+        'Authorization': `Bearer ${accessToken}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({

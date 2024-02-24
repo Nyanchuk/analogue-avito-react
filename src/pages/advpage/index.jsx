@@ -121,7 +121,7 @@ export const Advpage = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [modalRef]);
-  // Оставить комментарий
+  // Обновление токена
   const setCommentUser = (id) => {
     const text = document.getElementById('comment').value;
     const accessToken = localStorage.getItem('accessToken');
@@ -143,8 +143,8 @@ export const Advpage = () => {
             });
             if (serverResponse.status === 201) {
               console.log('Токен обновлен')
-              
-              getNewCommentText({id, text});
+              await getNewCommentText( id, text, accessToken);
+              // fetchData();
             } else {
               setError('Ошибка при отправке комментария');
             }
@@ -245,7 +245,7 @@ export const Advpage = () => {
                   <span>Добавить отзыв</span>
                   <textarea id='comment' className={styles.modal_form_input} type='text' placeholder='Введите отзыв'/>
                 </div>
-                <button type="button" className={`${styles.main_button} ${styles.save}`} disabled={!isTokenGlobal} onClick={setCommentUser}>
+                <button type="button" className={`${styles.main_button} ${styles.save}`} disabled={!isTokenGlobal} onClick={() => setCommentUser(id)}>
                 Опубликовать
               </button>
                 <div className={styles.modal_form_block}>
