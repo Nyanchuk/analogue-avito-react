@@ -33,6 +33,7 @@
   margin-bottom: 30px;
 }
 .main__content {
+  text-align: start;
   margin-top: 10px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);

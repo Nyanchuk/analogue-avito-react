@@ -5,10 +5,12 @@ import hover from '../../img/main_img/hover_exit.svg'
 import logo from '../../img/main_img/logo_modal.svg'
 import add_photo from '../../img/main_img/add-image.png'
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { sendRegistrationDataToServer } from '../../api';
 
 const Header = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   // Стейт для открытия модального окна
   const [openModal, setOpenModal] = useState(false);
   // Стейт для модального окна размещения обьявления
@@ -19,6 +21,8 @@ const Header = () => {
   const [isOpenFormRegistration, setIsOpenFormRegistration] = useState(false);
   // Для закрытия окна при клике вне окна
   const modalRef = useRef();
+  // Стейт для хранения ошибок
+  const [error, setError] = useState('');
   // REDUX
   const isTokenGlobal = useSelector(state => state.product.tokenExists);
 
@@ -48,7 +52,7 @@ const Header = () => {
   // Показ формы регистрации
   const hendleClickOpenFormReg = () => {
     if (isOpenFormRegistration) {
-      navigate('/profile');
+      handleRegisterUser();
     } else {
       setIsOpenFormRegistration(true);
     }
@@ -65,6 +69,63 @@ const Header = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [modalRef]);
+  // Регистрация
+  const handleRegisterUser = () => {
+    const role = 'user';
+    const email = document.getElementById('email').value;
+    const newPassword = document.getElementById('password').value;
+    const repeatPassword = document.getElementById('repeatPassword').value;
+    const name = document.getElementById('name').value;
+    const surname = document.getElementById('surname').value;
+    const phone = document.getElementById('phone').value;
+    const city = document.getElementById('city').value;
+    const errors = [];
+    switch (true) {
+      case newPassword !== repeatPassword:
+        errors.push('Пароли не совпадают!');
+        break;
+      case !newPassword || !repeatPassword:
+        errors.push('Введите пароли!');
+        break;
+      case !email:
+        errors.push('Введите email!');
+        break;
+      case !name:
+        errors.push('Введите имя!');
+        break;
+      case !phone:
+        errors.push('Введите номер телефона!');
+        break;
+      case !city:
+        errors.push('Укажите город!');
+        break;
+      default:
+        setError('');
+        const responce = async () => {
+          try {
+            const serverResponse = await sendRegistrationDataToServer({
+              password: newPassword,
+              role,
+              email,
+              name,
+              surname,
+              phone,
+              city,
+            });
+  
+            if (serverResponse.status === 200) {
+              // Обработка успешного ответа от сервера
+            } else {
+              setError('Ошибка при регистрации');
+            }
+          } catch (error) {
+            console.log(error)
+            setError('Ошибка при отправке данных');
+          }
+        };
+        responce();
+    }
+  };
 
   return (
     <div className={styles.wrapper}>
@@ -84,14 +145,15 @@ const Header = () => {
           <div className={styles.modalContent} ref={modalRef}>
             <form className={styles.modal_form}>
               <img src={logo} alt='logo'/>
-              <input className={styles.modal_form_input} type='text' placeholder='email'></input>
-              <input className={styles.modal_form_input} type='password' placeholder='Пароль'></input>
+              <input className={styles.modal_form_input} id='email' type='text' placeholder='email'></input>
+              <input className={styles.modal_form_input} id='password' type='password' placeholder='Пароль'></input>
               {isOpenFormRegistration && (
                 <div className={styles.modal_form}>
-                  <input className={styles.modal_form_input} type='password' placeholder='Повторите пароль'></input>
-                  <input className={styles.modal_form_input} type='text' placeholder='Имя (необязательно)'></input>
-                  <input className={styles.modal_form_input} type='text' placeholder='Фамилия (необязательно)'></input>
-                  <input className={styles.modal_form_input} type='text' placeholder='Город (необязательно)'></input>
+                  <input className={styles.modal_form_input} id='repeatPassword' type='password' placeholder='Повторите пароль'></input>
+                  <input className={styles.modal_form_input} id='name' type='text' placeholder='Имя (необязательно)'></input>
+                  <input className={styles.modal_form_input} id='surname' type='text' placeholder='Фамилия (необязательно)'></input>
+                  <input className={styles.modal_form_input} id='phone' type='text' placeholder='Номер (необязательно)'></input>
+                  <input className={styles.modal_form_input} id='city' type='text' placeholder='Город (необязательно)'></input>
                 </div>
               )}
               <div className={styles.modal_form_button}>
