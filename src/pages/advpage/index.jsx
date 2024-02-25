@@ -36,7 +36,6 @@ export const Advpage = () => {
   const [showPhoneNumber, setShowPhoneNumber] = useState(false);
   // Стейт для хранения ошибок
   const [error, setError] = useState('');
-  
 
   // Событие при наведении
   const handleMouseEnter = () => {

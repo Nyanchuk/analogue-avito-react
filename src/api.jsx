@@ -1,6 +1,8 @@
 // Хост
 const host = "http://localhost:8090/";
-// Запрос на получение всех объявлений
+
+// GET
+// Все объявления
 export const getAllAds = async () => {
   try {
     const response = await fetch(`${host}ads`, {
@@ -16,7 +18,7 @@ export const getAllAds = async () => {
     throw error;
   }
 };
-// Запрос на получение объявлений по id
+// Объявление по id
 export const getAds = async (id) => {
   try {
     const response = await fetch(`${host}ads/${id}`, {
@@ -32,7 +34,7 @@ export const getAds = async (id) => {
     throw error;
   }
 };
-// Запрос на получение всех комментариев по обьявлению
+// Все комментарии к объявлению
 export const getAllCommets = async (id) => {
   try {
     const response = await fetch(`${host}ads/${id}/comments`, {
@@ -48,6 +50,27 @@ export const getAllCommets = async (id) => {
     throw error;
   }
 };
+// Текущий юзер
+export const getMyProfile = async (accessToken) => {
+  try {
+    const response = await fetch(`${host}user`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+      },
+    });
+    if (response.ok) {
+      return await response.json();
+    } else {
+      throw new Error("Failed to fetch data");
+    }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    throw error;
+  }
+};
+
+// POST
 // Регистрация пользователя
 export const sendRegistrationDataToServer = async ({password, role, email, name, surname, phone, city}) => {
   console.log(password, role, email, name, surname, phone, city)
@@ -100,6 +123,59 @@ export const sendAuthenticationToServer = async ({password, email}) => {
     throw new Error(error.message);
   }
 };
+// Отправка комментария
+export const getNewCommentText = async (id, text, accessToken) => {
+  try {
+    const response = await fetch(`${host}ads/${id}/comments`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        text: text,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Ошибка при отправке данных на сервер");
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+// Загрузка аватара пользователя
+export const uploadUserPhoto = async (formData) => {
+  try {
+    const accessToken = localStorage.getItem('accessToken');
+    const refreshToken = localStorage.getItem('refreshToken');
+    const newToken = await refreshAccessToken({ accessToken, refreshToken });
+    // Установка правильного Content-Type c указанием границы
+    const headers = new Headers();
+    headers.append('Authorization', `Bearer ${newToken.access_token}`);
+
+    const response = await fetch(`${host}user/avatar`, {
+      method: 'POST',
+      headers: headers,
+      body: formData,
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log('Изображение успешно загружено:', data);
+      // Обработка успешной загрузки изображения
+    } else {
+      throw new Error('Ошибка загрузки изображения');
+    }
+  } catch (error) {
+    console.error('Произошла ошибка при загрузке изображения:', error);
+    // Обработка ошибок при загрузке изображения
+  }
+};
+
+// PUT
 // Обновление токена
 export const refreshAccessToken = async ({ accessToken, refreshToken }) => {
   try {
@@ -133,17 +209,24 @@ export const refreshAccessToken = async ({ accessToken, refreshToken }) => {
     // Логика для обработки ошибки обновления токена
   }
 };
-// Отправка комментария
-export const getNewCommentText = async (id, text, accessToken) => {
+
+// PATCH
+// Данные текущего юзера
+export const setUpdateUser = async ({ role, email, name, surname, phone, city, accessToken }) => {
   try {
-    const response = await fetch(`${host}ads/${id}/comments`, {
-      method: 'POST',
+    const response = await fetch(`${host}user`, {
+      method: 'PATCH',
       headers: {
         'Authorization': `Bearer ${accessToken}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        text: text,
+        role: role,
+        email: email,
+        name: name,
+        surname: surname,
+        phone: phone,
+        city: city
       }),
     });
 
@@ -154,24 +237,5 @@ export const getNewCommentText = async (id, text, accessToken) => {
     return data;
   } catch (error) {
     throw new Error(error.message);
-  }
-};
-// Получить текущего пользователя
-export const getMyProfile = async (accessToken) => {
-  try {
-    const response = await fetch(`${host}user`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-      },
-    });
-    if (response.ok) {
-      return await response.json();
-    } else {
-      throw new Error("Failed to fetch data");
-    }
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    throw error;
   }
 };

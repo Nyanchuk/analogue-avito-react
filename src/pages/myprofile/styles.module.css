@@ -52,6 +52,9 @@
 .main__container_img {
     width: 170px;
     height: 170px;
+    border-radius: 50%;
+    -o-object-fit: cover;
+    object-fit: cover;
 }
 
 .main__container_info_user {
@@ -67,6 +70,7 @@
 }
 
 .main__name_input {
+    padding-left: 10px;
     margin-top: 5px;
     width: 300px;
     height: 50px;
@@ -74,6 +78,8 @@
     border: 1px solid #C4C4C4;
     border-radius: 10px;
     background-color: transparent;
+    font-size: 16px;
+    color: rgb(100, 100, 100);
 }
 
 .main_block_search_button {
@@ -124,3 +130,14 @@
     grid-gap: 20px;
     max-height: auto;
 }
+
+/* Выбор файла */
+.inputFile {
+  position: absolute;
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  z-index: -1;
+  }
+  
