@@ -302,3 +302,53 @@
     background: #00a0e492;
     color: white;
 }
+/* Стилизация ошибок */
+.main_err_plase {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    width: 380px;
+    height: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.main_err{
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #f9d1d1;
+    border-radius: 10px;
+    margin-top: 10px;
+    width: 360px;
+    height: 80px;
+    background-color: #f9e4e4;
+}
+.main_err_massage {
+    padding: 10px;
+    text-align: center;
+    color: #c20101;
+    font-size: 16px;
+}
+/* Стилизация удачной регистрации */
+.main_done {
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #e5f9d1;
+    border-radius: 10px;
+    margin-top: 10px;
+    width: 360px;
+    height: 80px;
+    background-color: #e5f9d1;
+}
+.main_done_massage {
+    width: 300px;
+    text-align: center;
+    color: #85c201;
+    font-size: 16px;
+}

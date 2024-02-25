@@ -20,6 +20,8 @@ const Header = () => {
   const [isHovered, setIsHovered] = useState(false);
   // Стейт формы регистрации
   const [isOpenFormRegistration, setIsOpenFormRegistration] = useState(false);
+  // Стейт для показа попап при успешной регистрации
+  const [openPopup, setOpenPopup] = useState(false)
   // Для закрытия окна при клике вне окна
   const modalRef = useRef();
   // Стейт для хранения ошибок
@@ -31,16 +33,18 @@ const Header = () => {
   const openModalClick = () => {
     setOpenModal(true);
   }
-    // Открывает модальное окно размещения обьявления
-    const openModalClickTwo = () => {
-      setOpenModalTwo(true);
-    }
+  // Открывает модальное окно размещения обьявления
+  const openModalClickTwo = () => {
+    setOpenModalTwo(true);
+  }
   // Закрывает модальное окно
   const closeModal = () => {
     setOpenModal(false);
     setOpenModalTwo(false);
     setIsHovered(false);
     setIsOpenFormRegistration(false);
+    setError('');
+    setOpenPopup(false);
   }
   // Событие при наведении
   const handleMouseEnter = () => {
@@ -52,6 +56,7 @@ const Header = () => {
   }
   // Показ формы регистрации
   const hendleClickOpenFormReg = () => {
+    setError(''); 
     if (isOpenFormRegistration) {
       handleRegisterUser();
     } else {
@@ -80,25 +85,22 @@ const Header = () => {
     const surname = document.getElementById('surname').value;
     const phone = document.getElementById('phone').value;
     const city = document.getElementById('city').value;
-    const errors = [];
+    const emailFormat = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
     switch (true) {
+      case !email:
+        setError('Введите email');
+        break;
+      case !email.match(emailFormat):
+        setError('Введите корректный email');
+        break;
       case newPassword !== repeatPassword:
-        errors.push('Пароли не совпадают!');
+        setError('Пароли не совпадают!');
         break;
       case !newPassword || !repeatPassword:
-        errors.push('Введите пароли!');
-        break;
-      case !email:
-        errors.push('Введите email!');
+        setError('Введите пароли!');
         break;
       case !name:
-        errors.push('Введите имя!');
-        break;
-      case !phone:
-        errors.push('Введите номер телефона!');
-        break;
-      case !city:
-        errors.push('Укажите город!');
+        setError('Введите имя');
         break;
       default:
         setError('');
@@ -113,15 +115,11 @@ const Header = () => {
               phone,
               city,
             });
-  
-            if (serverResponse.status === 201) {
-              setIsOpenFormRegistration(false);
-            } else {
-              setError('Ошибка при регистрации');
-            }
+            setError(''); 
+            setIsOpenFormRegistration(false);
+            setOpenPopup(true);
           } catch (error) {
-            console.log(error)
-            setError('Ошибка при отправке данных');
+            setError(error.message);
           }
         };
         responce();
@@ -134,10 +132,10 @@ const Header = () => {
     const errors = [];
     switch(true) {
       case !email:
-        errors.push('Введите email!');
+        setError('Введите email');
         break;
       case !newPassword:
-        errors.push('Введите пароль!');
+        setError('Введите пароль');
         break;
       default:
         setError('');
@@ -153,18 +151,17 @@ const Header = () => {
               localStorage.setItem('refreshToken', serverResponse.refresh_token);
               dispatch(setTokenExists(true));
               closeModal();
-              // ... Другие действия после успешной аутентификации
             } else {
               setError('Ошибка при регистрации');
               dispatch(setTokenExists(false));
             }
           } catch (error) {
             console.log(error)
-            setError('Ошибка при отправке данных');
+            setError(error.message);
           }
+          
         };
         getToken();
-
     }
   }
   // Выйти
@@ -189,6 +186,13 @@ const Header = () => {
       </div>
       {openModal && (
         <div className={styles.modal} >
+          <div className={styles.main_err_plase}>
+            {openPopup && (
+              <div className={styles.main_done}>
+                <div className={styles.main_done_massage }>Вы прошли регистрацию, пожалуйста войдите с систему!</div>
+              </div>
+            )} 
+          </div>
           <div className={styles.modalContent} ref={modalRef}>
             <form className={styles.modal_form}>
               <img src={logo} alt='logo'/>
@@ -197,7 +201,7 @@ const Header = () => {
               {isOpenFormRegistration && (
                 <div className={styles.modal_form}>
                   <input className={styles.modal_form_input} id='repeatPassword' type='password' placeholder='Повторите пароль'></input>
-                  <input className={styles.modal_form_input} id='name' type='text' placeholder='Имя (необязательно)'></input>
+                  <input className={styles.modal_form_input} id='name' type='text' placeholder='Имя'></input>
                   <input className={styles.modal_form_input} id='surname' type='text' placeholder='Фамилия (необязательно)'></input>
                   <input className={styles.modal_form_input} id='phone' type='text' placeholder='Номер (необязательно)'></input>
                   <input className={styles.modal_form_input} id='city' type='text' placeholder='Город (необязательно)'></input>
@@ -216,6 +220,7 @@ const Header = () => {
               </button>
               </div>
             </form>
+            
             <img
               src={isHovered ? hover : exits}
               onMouseEnter={handleMouseEnter}
@@ -225,8 +230,18 @@ const Header = () => {
               alt='exit'
             />
           </div>
+          <div className={styles.main_err_plase}>
+            {/* Отображение ошибки */}
+            {error && (
+              <div className={styles.main_err}>
+                <div className={styles.main_err_massage}>{error}</div>
+              </div>
+            )}
+          </div>
+          
         </div>
       )}
+      
       {openModalTwo && (
                 <div className={styles.modal_two}>
                 <div className={styles.modalContent_two} ref={modalRef}>

@@ -91,11 +91,16 @@ export const sendRegistrationDataToServer = async ({password, role, email, name,
       }),
     });
 
-    if (!response.ok) {
+    if (response.status === 201) {
+      const data = await response.json();
+      return data;
+    } else if (response.status === 400) {
+      throw new Error("Данный email уже существует");
+    } else if (response.status === 422) {
+      throw new Error("Данные неверного формата");
+    } else {
       throw new Error("Ошибка при отправке данных на сервер");
     }
-    const data = await response.json();
-    return data;
   } catch (error) {
     throw new Error(error.message);
   }
@@ -113,6 +118,15 @@ export const sendAuthenticationToServer = async ({password, email}) => {
         email: email,
       }),
     });
+
+    if (response.status === 401) {
+      const errorData = await response.json();
+      if (errorData.detail === 'Incorrect password') {
+        throw new Error('Неверный пароль');
+      } else if (errorData.detail === 'Incorrect email') {
+        throw new Error('Неверный email');
+      }
+    }
 
     if (!response.ok) {
       throw new Error("Ошибка при отправке данных на сервер");
