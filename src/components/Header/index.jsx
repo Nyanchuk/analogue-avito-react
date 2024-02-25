@@ -128,7 +128,7 @@ const Header = () => {
     }
   };
   // Авторизация
-  const handleAuthorizUser = ( )=> {
+  const handleAuthorizUser = ()=> {
     const email = document.getElementById('email').value;
     const newPassword = document.getElementById('password').value;
     const errors = [];
@@ -167,6 +167,12 @@ const Header = () => {
 
     }
   }
+  // Выйти
+  const LogOutYourAccount = () => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    dispatch(setTokenExists(false))
+  }
 
   return (
     <div className={styles.wrapper}>
@@ -175,7 +181,7 @@ const Header = () => {
           <div className={styles.main_buttons}>
             <button className={styles.main_button} onClick={openModalClickTwo}>Разместить объявление</button>
             <button className={styles.main_button} onClick={() => navigate('/profile')}>Личный кабинет</button>
-            <button className={styles.main_button_exit}>Выйти</button>
+            <button className={styles.main_button_exit} onClick={LogOutYourAccount}>Выйти</button>
           </div>
         ) : (
           <button className={styles.main_button} onClick={openModalClick}>Вход в личный кабинет</button>

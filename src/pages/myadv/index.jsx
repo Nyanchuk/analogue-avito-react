@@ -5,8 +5,10 @@ import Search from '../../components/Search';
 import user from '../../img/main_img/photo_user.png';
 import exits from '../../img/main_img/exit.svg'
 import hover from '../../img/main_img/hover_exit.svg'
+import { useNavigate } from 'react-router-dom';
 
-export const Myadv = () => {
+export const Myadv = ({ isAuthenticated }) => {
+  const navigate = useNavigate();
   // Стейт для изменения контента
   const [product, setProduct] = useState({ text: '' });
   // Стейт для открытия модального окна
@@ -19,6 +21,12 @@ export const Myadv = () => {
   const [products, setProducts] = useState([
     { id: 1, title: "Ракетка для большого тенниса Triumph Pro ST", price: "2 200", place: "Санкт Петербург", date: "Сегодня 10:45", text:"Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita earum deleniti distinctio itaque reprehenderit provident aliquid in aut. Incidunt error, consectetur sequi fugit eos iste, quasi excepturi nisi vero temporibus repellat quam numquam doloribus et facilis dolores. Inventore illo facilis a, minima fugit nisi eum laboriosam veritatis magnam alias quasi."},
   ]);
+  // Проверка авторизации
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
 
   // Событие при наведении
   const handleMouseEnter = () => {

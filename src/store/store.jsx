@@ -1,7 +1,15 @@
 import { createStore, applyMiddleware } from 'redux';
 import rootReducer from './reducers';
 import { thunk } from 'redux-thunk';
+import { setTokenExists } from './actions/creators/productCreators';
 
+// Слушаем storage
+window.addEventListener('storage', () => {
+  const tokenExists = localStorage.getItem('accessToken');
+  if (!tokenExists) {
+    store.dispatch(setTokenExists(false))
+  }
+});
 // Функция для инициализации состояния
 const loadState = () => {
   try {
@@ -20,7 +28,6 @@ const loadState = () => {
       };
     }
   } catch (error) {
-    // Обработка ошибок при получении данных из localStorage 
     return undefined;
   }
 };

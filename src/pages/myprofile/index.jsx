@@ -1,17 +1,21 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './styles.module.css';
 import Header from '../../components/Header';
 import Search from '../../components/Search';
 import ProductCard from '../../components/ProductCard';
 import user from '../../img/main_img/photo_user.png';
+import { useNavigate } from 'react-router-dom';
 
-export const Myprofile = () => {
+export const Myprofile = ({ isAuthenticated }) => {
+  const navigate = useNavigate();
   const [products, setProducts] = useState([
-    { id: 1, title: "Ракетка для большого тенниса Triumph Pro ST", price: "2200 ₽", place: "Санкт Петербург", date: "Сегодня 10:45" },
-    { id: 2, title: "Ракетка для большого тенниса Triumph Pro ST", price: "2200 ₽", place: "Санкт Петербург", date: "Сегодня 10:45" },
-    { id: 3, title: "Ракетка для большого тенниса Triumph Pro ST", price: "2200 ₽", place: "Санкт Петербург", date: "Сегодня 10:45" },
-    { id: 4, title: "Ракетка для большого тенниса Triumph Pro ST", price: "2200 ₽", place: "Санкт Петербург", date: "Сегодня 10:45" },
   ]);
+  // Проверка авторизации
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
     return (
       <div>
       <Header />
