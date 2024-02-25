@@ -156,3 +156,22 @@ export const getNewCommentText = async (id, text, accessToken) => {
     throw new Error(error.message);
   }
 };
+// Получить текущего пользователя
+export const getMyProfile = async (accessToken) => {
+  try {
+    const response = await fetch(`${host}user`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+      },
+    });
+    if (response.ok) {
+      return await response.json();
+    } else {
+      throw new Error("Failed to fetch data");
+    }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    throw error;
+  }
+};
