@@ -6,7 +6,7 @@ import logo from '../../img/main_img/logo_modal.svg'
 import add_photo from '../../img/main_img/add-image.png'
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { sendAuthenticationToServer, sendRegistrationDataToServer } from '../../api';
+import { getNewMyAds, sendAuthenticationToServer, sendRegistrationDataToServer } from '../../api';
 import { setTokenExists } from '../../store/actions/creators/productCreators';
 
 const Header = () => {
@@ -189,7 +189,6 @@ const handleImageUpload = (event) => {
         file: file
       };
       setPhotos([...photos, newPhoto]);
-      event.target.value = null; // Сброс выбранного файла, чтобы окно выбора не появлялось повторно
     };
     reader.readAsDataURL(file);
   } else {
@@ -197,10 +196,29 @@ const handleImageUpload = (event) => {
   }
 };
   // Новое объявление
-  const hanldleNewMyAds = (e) => {
+  const hanldleNewMyAds = () => {
+    const title = document.getElementById('title').value;
+    const description = document.getElementById('description').value;
+    const price = document.getElementById('price').value;
   
-
-  }
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('description', description);
+    formData.append('price', price);
+  
+    photos.forEach((photo, index) => {
+      formData.append(`image${index}`, photo.file);
+    });
+  
+    getNewMyAds(formData)
+      .then((data) => {
+        // Обработка успешного ответа от сервера
+      })
+      .catch((error) => {
+        console.error(error);
+        // Обработка ошибок при отправке данных на сервер
+      });
+  };
 
   return (
     <div className={styles.wrapper}>
@@ -306,13 +324,12 @@ const handleImageUpload = (event) => {
                             </label>
                           </div>
                         )}
-
                     </div>
                       </div>
                       <div className={styles.modal_form_block}>
                         <span>Цена</span>
                         <div>
-                          <input className={styles.modal_form_price} type='text' placeholder='Цена'/>
+                          <input id='price' className={styles.modal_form_price} type='text' placeholder='Цена'/>
                           <select className={styles.currency_select}>
                             <option value='rub'>₽</option>
                             <option value='usd'>$</option>
@@ -320,9 +337,9 @@ const handleImageUpload = (event) => {
                           </select>
                         </div>
                       </div>
-                      <label onChange={hanldleNewMyAds} htmlFor="fileInput" className={`${styles.main_button} ${styles.save}`} disabled={!isTokenGlobal}>
+                      <button type='button' onClick={hanldleNewMyAds} className={`${styles.main_button} ${styles.save}`} disabled={!isTokenGlobal}>
                       Опубликовать
-                    </label>
+                    </button>
                     </form>
                   <img
                     src={isHovered ? hover : exits}
