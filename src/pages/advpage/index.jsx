@@ -123,47 +123,26 @@ export const Advpage = () => {
   // Обновление токена + создание нового комментария
   const setCommentUser = (id) => {
     const text = document.getElementById('comment').value;
-    const accessToken = localStorage.getItem('accessToken');
-    const refreshToken = localStorage.getItem('refreshToken');
     const errors = [];
-    console.log(accessToken);
-    console.log(refreshToken);
-  
     switch(true) {
       case !text:
         errors.push('Введите текст!');
         break;
       default:
         setError('');
-        refreshAccessToken({ accessToken, refreshToken })
-          .then((serverResponse) => {
-            if (serverResponse.status === 201) {
-              console.log('Токен обновлен');
-              return getNewCommentText(id, text, serverResponse.access_token);
-            } else {
-              setError('Ошибка при отправке комментария');
-            }
-          })
-          .then((data) => {
-            if (data) {
-              getAllCommets(id)
-                .then((comments) => {
-                  setComments(comments);
-                  const totalComments = comments.length;
-                  setTotalComments(totalComments);
-                  document.getElementById('comment').value = '';
-                })
-                .catch((error) => {
-                  console.error(error);
-                  setError('Ошибка при получении комментариев');
-                });
-            }
+        getNewCommentText(id, text)
+          .then(() => getAllCommets(id))
+          .then((comments) => {
+            setComments(comments);
+            const totalComments = comments.length;
+            setTotalComments(totalComments);
+            document.getElementById('comment').value = '';
           })
           .catch((error) => {
             console.error(error);
-            setError('Ошибка при отправке данных');
+            setError('Ошибка при получении комментариев');
           });
-      }
+    }
   };
   
     return (

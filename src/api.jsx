@@ -1,6 +1,37 @@
 // Хост
 const host = "http://localhost:8090/";
 
+// PUT
+// Обновление токена
+export const refreshAccessToken = async () => {
+  try {
+    const accessToken = localStorage.getItem('accessToken');
+    const refreshToken = localStorage.getItem('refreshToken');
+    const response = await fetch(`${host}auth/login`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ access_token: accessToken, refresh_token: refreshToken }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Ошибка при обновлении токена");
+    }
+
+    const data = await response.json();
+    if (data.access_token && data.refresh_token) {
+      localStorage.setItem('accessToken', data.access_token);
+      localStorage.setItem('refreshToken', data.refresh_token);
+      return { accessToken: data.access_token, refreshToken: data.refresh_token };
+    } else {
+      throw new Error("Токен не был получен после обновления");
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
 // GET
 // Все объявления
 export const getAllAds = async () => {
@@ -51,8 +82,9 @@ export const getAllCommets = async (id) => {
   }
 };
 // Текущий юзер
-export const getMyProfile = async (accessToken) => {
+export const getMyProfile = async () => {
   try {
+    const accessToken = localStorage.getItem('accessToken');
     const response = await fetch(`${host}user`, {
       method: 'GET',
       headers: {
@@ -61,12 +93,18 @@ export const getMyProfile = async (accessToken) => {
     });
     if (response.ok) {
       return await response.json();
+    } else if (response.status === 401) {
+      await refreshAccessToken();
+      return await getMyProfile();
     } else {
       throw new Error("Failed to fetch data");
     }
   } catch (error) {
-    console.error("Error fetching data:", error);
-    throw error;
+    if (error.response && (error.response.status === 422 || error.response.status === 500)) {
+      console.error("Error updating user data:", error);
+    } else {
+      throw error;
+    }
   }
 };
 
@@ -138,8 +176,9 @@ export const sendAuthenticationToServer = async ({password, email}) => {
   }
 };
 // Отправка комментария
-export const getNewCommentText = async (id, text, accessToken) => {
+export const getNewCommentText = async (id, text) => {
   try {
+    const accessToken = localStorage.getItem('accessToken');
     const response = await fetch(`${host}ads/${id}/comments`, {
       method: 'POST',
       headers: {
@@ -151,11 +190,15 @@ export const getNewCommentText = async (id, text, accessToken) => {
       }),
     });
 
-    if (!response.ok) {
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else if (response.status === 401) {
+      await refreshAccessToken(); // Обновляем токен
+      return await getNewCommentText(id, text); // Повторно вызываем функцию с новым токеном
+    } else {
       throw new Error("Ошибка при отправке данных на сервер");
     }
-    const data = await response.json();
-    return data;
   } catch (error) {
     throw new Error(error.message);
   }
@@ -164,11 +207,9 @@ export const getNewCommentText = async (id, text, accessToken) => {
 export const uploadUserPhoto = async (formData) => {
   try {
     const accessToken = localStorage.getItem('accessToken');
-    const refreshToken = localStorage.getItem('refreshToken');
-    const newToken = await refreshAccessToken({ accessToken, refreshToken });
     // Установка правильного Content-Type c указанием границы
     const headers = new Headers();
-    headers.append('Authorization', `Bearer ${newToken.access_token}`);
+    headers.append('Authorization', `Bearer ${accessToken}`);
 
     const response = await fetch(`${host}user/avatar`, {
       method: 'POST',
@@ -179,9 +220,11 @@ export const uploadUserPhoto = async (formData) => {
     if (response.ok) {
       const data = await response.json();
       console.log('Изображение успешно загружено:', data);
-      // Обработка успешной загрузки изображения
+    } else if (response.status === 401) {
+      await refreshAccessToken();
+      return await uploadUserPhoto(formData);
     } else {
-      throw new Error('Ошибка загрузки изображения');
+      throw new Error("Failed to fetch data");
     }
   } catch (error) {
     console.error('Произошла ошибка при загрузке изображения:', error);
@@ -189,45 +232,11 @@ export const uploadUserPhoto = async (formData) => {
   }
 };
 
-// PUT
-// Обновление токена
-export const refreshAccessToken = async ({ accessToken, refreshToken }) => {
-  try {
-    const response = await fetch(`${host}auth/login`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ access_token: accessToken, refresh_token: refreshToken }),
-    });
-
-    if (!response.ok) {
-      throw new Error("Ошибка при обновлении токена");
-    }
-
-    const data = await response.json();
-    if (data.access_token && data.refresh_token) {
-      localStorage.setItem('accessToken', data.access_token);
-      localStorage.setItem('refreshToken', data.refresh_token);
-    }
-    else {
-      throw new Error("Токен не был получен после обновления");
-    }
-    return {
-      status: response.status,
-      access_token: data.access_token,
-      refresh_token: data.refresh_token,
-    };
-  } catch (error) {
-    console.error(error);
-    // Логика для обработки ошибки обновления токена
-  }
-};
-
 // PATCH
 // Данные текущего юзера
-export const setUpdateUser = async ({ role, email, name, surname, phone, city, accessToken }) => {
+export const setUpdateUser = async ({ role, email, name, surname, phone, city }) => {
   try {
+    const accessToken = localStorage.getItem('accessToken');
     const response = await fetch(`${host}user`, {
       method: 'PATCH',
       headers: {
@@ -244,12 +253,19 @@ export const setUpdateUser = async ({ role, email, name, surname, phone, city, a
       }),
     });
 
-    if (!response.ok) {
-      throw new Error("Ошибка при отправке данных на сервер");
+    if (response.ok) {
+      return await response.json();
+    } else if (response.status === 401) {
+      await refreshAccessToken();
+      return await setUpdateUser({ role, email, name, surname, phone, city });
+    } else {
+      throw new Error("Failed to update user data");
     }
-    const data = await response.json();
-    return data;
   } catch (error) {
-    throw new Error(error.message);
+    if (error.response && (error.response.status === 422 || error.response.status === 500)) {
+      console.error("Error updating user data:", error);
+    } else {
+      throw error;
+    }
   }
 };

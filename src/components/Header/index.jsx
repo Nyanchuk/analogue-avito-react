@@ -129,7 +129,6 @@ const Header = () => {
   const handleAuthorizUser = ()=> {
     const email = document.getElementById('email').value;
     const newPassword = document.getElementById('password').value;
-    const errors = [];
     switch(true) {
       case !email:
         setError('Введите email');

@@ -26,21 +26,12 @@ export const Myprofile = ({ isAuthenticated }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const accessToken = localStorage.getItem('accessToken');
-        const refreshToken = localStorage.getItem('refreshToken');
         setError('');
-  
-        const tokenResponse = await refreshAccessToken({ accessToken, refreshToken });
-        if (tokenResponse.status !== 201) {
-          throw new Error('Ошибка при обновлении токена');
-        }
-  
-        console.log('Токен обновлен');
-  
-        const userProfile = await getMyProfile(tokenResponse.access_token);
+        // Получение токена + получение профиля юзера
+        const userProfile = await getMyProfile();
         console.log(userProfile);
         setUsers(userProfile);
-  
+        // Получение всех объявлений
         const adsData = await getAllAds();
         console.log(adsData);
         const userProducts = adsData.filter(product => product.sellerId === userProfile.id);
@@ -61,8 +52,6 @@ export const Myprofile = ({ isAuthenticated }) => {
     const surname = document.getElementById('surname').value;
     const phone = document.getElementById('phone').value;
     const city = document.getElementById('city').value;
-    const accessToken = localStorage.getItem('accessToken');
-    const refreshToken = localStorage.getItem('refreshToken');
     const errors = [];
     switch(true) {
       case !name:
@@ -79,18 +68,10 @@ export const Myprofile = ({ isAuthenticated }) => {
         break;
       default:
         setError('');
-        refreshAccessToken({ accessToken, refreshToken })
-          .then((serverResponse) => {
-            if (serverResponse.status === 201) {
-              console.log('Токен обновлен');
-              return setUpdateUser({ role, email, name, surname, phone, city, accessToken });
-            } else {
-              throw new Error('Ошибка при обновлении токена');
-            }
-          })
-          .then(() => {
-            return getMyProfile(accessToken);
-          })
+        setUpdateUser({ role, email, name, surname, phone, city })
+        .then(() => {
+          return getMyProfile();
+        })
           .catch((error) => {
             console.error(error);
             setError('Произошла ошибка: ' + error.message);
@@ -99,14 +80,13 @@ export const Myprofile = ({ isAuthenticated }) => {
   };
 // Обновление фото юзера
 const updatePhotoUser = async (event) => {
-  const accessToken = localStorage.getItem('accessToken');
   const file = event.target.files[0];
   if (file) {
     const formData = new FormData();
     formData.append('file', file);
     await uploadUserPhoto(formData);
     // После успешной загрузки изображения, обновляем информацию о профиле
-    const userProfile = await getMyProfile(accessToken);
+    const userProfile = await getMyProfile();
     setUsers(userProfile);
   }
 };
