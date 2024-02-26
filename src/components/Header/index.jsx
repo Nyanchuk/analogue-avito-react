@@ -28,6 +28,8 @@ const Header = () => {
   const [error, setError] = useState('');
   // REDUX
   const isTokenGlobal = useSelector(state => state.product.tokenExists);
+  // Стейт для хранения фото перед отправкой
+  const [photos, setPhotos] = useState([]);
 
   // Открывает модальное окно
   const openModalClick = () => {
@@ -75,6 +77,7 @@ const Header = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [modalRef]);
+  
   // Регистрация
   const handleRegisterUser = () => {
     const role = 'user';
@@ -86,6 +89,7 @@ const Header = () => {
     const phone = document.getElementById('phone').value;
     const city = document.getElementById('city').value;
     const emailFormat = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    const phonePattern = /^\d+$/;
     switch (true) {
       case !email:
         setError('Введите email');
@@ -101,6 +105,9 @@ const Header = () => {
         break;
       case !name:
         setError('Введите имя');
+        break;
+      case !phone.match(phonePattern):
+        setError('Введите корректный номер телефона!');
         break;
       default:
         setError('');
@@ -168,6 +175,31 @@ const Header = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     dispatch(setTokenExists(false))
+  }
+// Обработка состояния картинок
+const handleImageUpload = (event) => {
+  const file = event.target.files[0];
+  
+  // Проверка на тип файла, например, можно ограничить только изображениями
+  if (file.type.startsWith('image/')) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const newPhoto = {
+        url: reader.result,
+        file: file
+      };
+      setPhotos([...photos, newPhoto]);
+      event.target.value = null; // Сброс выбранного файла, чтобы окно выбора не появлялось повторно
+    };
+    reader.readAsDataURL(file);
+  } else {
+    alert('Пожалуйста, выберите изображение.');
+  }
+};
+  // Новое объявление
+  const hanldleNewMyAds = (e) => {
+  
+
   }
 
   return (
@@ -249,24 +281,33 @@ const Header = () => {
                       <span className={styles.modal_form_title}>Новое объявление</span>
                       <div className={styles.modal_form_block}>
                         <span>Название</span>
-                        <input className={styles.modal_form_input_two} type='text' placeholder='Название продукта' />
+                        <input className={styles.modal_form_input_two} id='title' type='text' placeholder='Название продукта' />
                       </div>
                       <div className={styles.modal_form_block}>
                         <span>Описание</span>
                         <textarea 
+                          id='description'
                           className={styles.modal_form_textarea} 
                           placeholder='Описание продукта' 
                         />
                       </div>
                       <div className={styles.modal_form_img}>
-                        <span>Фотограции товара</span>
+                        <span>Фотографии товара</span>
                         <div className={styles.main__info_addition}>
-                          <img src={add_photo} className={styles.addition} />
-                          <img src={add_photo} className={styles.addition} />
-                          <img src={add_photo} className={styles.addition} />
-                          <img src={add_photo} className={styles.addition} />
-                          <img src={add_photo} className={styles.addition} />
-                        </div>
+
+                        {photos.map((photo, index) => (
+                          <img key={index} src={photo.url} alt={`Photo ${index}`} className={styles.addition}/>
+                        ))}
+                        {photos.length < 5 && (
+                          <div>
+                            <input type="file" accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} />
+                            <label>
+                                <img src={add_photo} alt="Add Photo" onClick={() => document.querySelector('input[type="file"]').click()} className={styles.addition}/>
+                            </label>
+                          </div>
+                        )}
+
+                    </div>
                       </div>
                       <div className={styles.modal_form_block}>
                         <span>Цена</span>
@@ -279,9 +320,9 @@ const Header = () => {
                           </select>
                         </div>
                       </div>
-                      <button className={`${styles.main_button} ${styles.save}`} disabled={!isTokenGlobal}>
-                        Опубликовать
-                      </button>
+                      <label onChange={hanldleNewMyAds} htmlFor="fileInput" className={`${styles.main_button} ${styles.save}`} disabled={!isTokenGlobal}>
+                      Опубликовать
+                    </label>
                     </form>
                   <img
                     src={isHovered ? hover : exits}

@@ -70,6 +70,7 @@
 }
 
 .main__name_input {
+    outline: none;
     padding-left: 10px;
     margin-top: 5px;
     width: 300px;

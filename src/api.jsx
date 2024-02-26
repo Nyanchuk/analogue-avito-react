@@ -231,6 +231,37 @@ export const uploadUserPhoto = async (formData) => {
     // Обработка ошибок при загрузке изображения
   }
 };
+// Отправка нового объявления
+export const getNewMyAds = async (title, description, price, imageFile) => {
+  try {
+    const accessToken = localStorage.getItem('accessToken');
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('description', description);
+    formData.append('price', price);
+    formData.append('files', imageFile);
+
+    const response = await fetch(`${host}ads`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
+      },
+      body: formData,
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else if (response.status === 401) {
+      await refreshAccessToken();
+      return await getNewMyAds(title, description, price, imageFile);
+    } else {
+      throw new Error("Ошибка при отправке данных на сервер");
+    }
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
 
 // PATCH
 // Данные текущего юзера

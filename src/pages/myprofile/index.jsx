@@ -46,28 +46,29 @@ export const Myprofile = ({ isAuthenticated }) => {
   }, []);
   // Обновление данных юзера
   const updateUserInfo = () => {
+    const nameInput = document.getElementById('name');
+    const phoneInput = document.getElementById('phone');
     const role = 'user';
     const email = users.email;
     const name = document.getElementById('name').value;
     const surname = document.getElementById('surname').value;
     const phone = document.getElementById('phone').value;
     const city = document.getElementById('city').value;
+    const phonePattern = /^(\+\d{1,3})?\d{10}$/;
     const errors = [];
     switch(true) {
       case !name:
         errors.push('Введите имя!');
+        nameInput.style.borderColor = '#f56a6aaa';
         break;
-      case !surname:
-        errors.push('Введите фамилию!');
-        break;
-      case !phone:
-        errors.push('Введите телефон!');
-        break;
-      case !city:
-        errors.push('Введите город!');
+      case !phone.match(phonePattern):
+        errors.push('Введите корректный номер телефона!');
+        phoneInput.style.borderColor = '#f56a6aaa';
         break;
       default:
         setError('');
+        nameInput.style.borderColor = '';
+        phoneInput.style.borderColor = '';
         setUpdateUser({ role, email, name, surname, phone, city })
         .then(() => {
           return getMyProfile();
