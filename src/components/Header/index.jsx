@@ -6,7 +6,7 @@ import logo from '../../img/main_img/logo_modal.svg'
 import add_photo from '../../img/main_img/add-image.png'
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getMyProfile, getNewAdWithoutPhotos, getNewMyAds, sendAuthenticationToServer, sendRegistrationDataToServer } from '../../api';
+import { getMyProfile, getNewAdWithoutPhotos, getNewMyAds, sendAuthenticationToServer, sendRegistrationDataToServer, uploadImages } from '../../api';
 import { setTokenExists } from '../../store/actions/creators/productCreators';
 
 const Header = () => {
@@ -186,8 +186,11 @@ const handleImageUpload = (event) => {
     reader.onload = () => {
       const newPhoto = {
         url: reader.result,
+        file: file,
       };
       setPhotos([...photos, newPhoto]);
+      console.log(newPhoto)
+      console.log(photos)
     };
     reader.readAsDataURL(file);
   } else {
@@ -195,19 +198,17 @@ const handleImageUpload = (event) => {
   }
 };
   // Новое объявление
-const hanldleNewMyAds = () => {
-  const title = document.getElementById('title').value;
-  const description = document.getElementById('description').value;
-  const price = document.getElementById('price').value;
-  console.log(photos)
-  getNewMyAds(title, description, price, {photos})
-    .then((data) => {
-      console.log(data)
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-};
+  const handlePublish = async () => {
+    const title = document.getElementById('title').value;
+    const description = document.getElementById('description').value;
+    const price = document.getElementById('price').value;
+    console.log(photos)
+  
+    const adData = await getNewMyAds(title, description, price);
+    const adId = adData.id;
+    const result = await uploadImages(adId, photos);
+    console.log(result);
+  };
 
 
 
@@ -328,7 +329,7 @@ const hanldleNewMyAds = () => {
                           </select>
                         </div>
                       </div>
-                      <button type='button' onClick={hanldleNewMyAds} className={`${styles.main_button} ${styles.save}`} disabled={!isTokenGlobal}>
+                      <button type='button' onClick={handlePublish} className={`${styles.main_button} ${styles.save}`} disabled={!isTokenGlobal}>
                       Опубликовать
                     </button>
                     </form>

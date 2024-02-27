@@ -280,10 +280,8 @@ export const getNewAdWithoutPhotos = async ({title, description, price}) => {
   }
 };
 // Отправка нового объявления с фото
-export const getNewMyAds = async (title, description, price, photos) => {
+export const getNewMyAds = async (title, description, price ) => {
   try {
-    
-    console.log(photos.photos)
     const accessToken = localStorage.getItem("accessToken");
     const url = `${host}ads?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&price=${encodeURIComponent(price)}`;
     const response = await fetch(url, {
@@ -292,7 +290,6 @@ export const getNewMyAds = async (title, description, price, photos) => {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(photos.photos),
     });
 
     if (response.ok) {
@@ -300,9 +297,41 @@ export const getNewMyAds = async (title, description, price, photos) => {
       return data;
     } else if (response.status === 401) {
       await refreshAccessToken();
-      return await getNewMyAds(title, description, price, photos);
+      return await getNewMyAds(title, description, price );
     } else {
       throw new Error("Ошибка при отправке данных на сервер");
+    }
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+// Функция для отправки изображений на сервер
+export const uploadImages = async (adId, photos) => {
+  try {
+    const accessToken = localStorage.getItem("accessToken");
+    const formData = new FormData();
+
+    for (let i = 0; i < photos.length; i++) {
+      const photo = photos[i];
+      formData.append('image', photo.file); // Добавляем файл в объект FormData
+    }
+
+    const response = await fetch(`${host}ads/${adId}/image`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: formData,
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data; // Возвращаем ответ от сервера
+    } else if (response.status === 401) {
+      await refreshAccessToken();
+      return await uploadImages(adId, photos);
+    } else {
+      throw new Error("Ошибка при отправке изображений на сервер");
     }
   } catch (error) {
     throw new Error(error.message);
