@@ -282,19 +282,17 @@ export const getNewAdWithoutPhotos = async ({title, description, price}) => {
 // Отправка нового объявления с фото
 export const getNewMyAds = async (title, description, price, photos) => {
   try {
-    console.log(photos)
-    const formData = new FormData();
-    photos.forEach((photo, index) => {
-      formData.append(`photo${index}`, photo.file);
-    });
+    
+    console.log(photos.photos)
     const accessToken = localStorage.getItem("accessToken");
     const url = `${host}ads?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&price=${encodeURIComponent(price)}`;
     const response = await fetch(url, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
       },
-      body: formData,
+      body: JSON.stringify(photos.photos),
     });
 
     if (response.ok) {

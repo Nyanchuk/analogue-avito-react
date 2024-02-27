@@ -186,7 +186,6 @@ const handleImageUpload = (event) => {
     reader.onload = () => {
       const newPhoto = {
         url: reader.result,
-        file: file
       };
       setPhotos([...photos, newPhoto]);
     };
@@ -201,7 +200,7 @@ const hanldleNewMyAds = () => {
   const description = document.getElementById('description').value;
   const price = document.getElementById('price').value;
   console.log(photos)
-  getNewMyAds(title, description, price, photos)
+  getNewMyAds(title, description, price, {photos})
     .then((data) => {
       console.log(data)
     })
