@@ -32,10 +32,10 @@ export const Myprofile = ({ isAuthenticated }) => {
         console.log(userProfile);
         setUsers(userProfile);
         // Получение всех объявлений
-        const adsData = await getAllAds();
-        console.log(adsData);
-        const userProducts = adsData.filter(product => product.sellerId === userProfile.id);
-        setProducts(userProducts);
+        const allAdsData = await getAllAds();
+        console.log(allAdsData);
+        const filteredProducts = allAdsData.filter(product => product.user.id === Number(userProfile.id));
+        setProducts(filteredProducts);
       } catch (error) {
         console.error(error);
         setError('Произошла ошибка: ' + error.message);
@@ -158,11 +158,9 @@ const updatePhotoUser = async (event) => {
         <div className={styles.main__container}>
           <div className={styles.main__h3}>Мои товары</div>
           <div className={styles.main__content}>
-          {products
-            .filter(product => product.sellerId === users.id)
-            .map(filteredProduct => (
-              <ProductCard key={filteredProduct.id} product={filteredProduct} sellerId={users.id}/>
-            ))}
+          {products.map(filteredProduct => (
+            <ProductCard key={filteredProduct.id} product={filteredProduct} sellerId={users.id}/>
+          ))}
           </div>
         </div>
       </div>
