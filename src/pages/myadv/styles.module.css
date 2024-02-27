@@ -56,14 +56,12 @@
     height: 480px;
     box-sizing: border-box;
     border: 1px solid transparent;
-    background-color: #F0F0F0;
 }
 .addition {
     width: 88px;
     height: 88px;
     box-sizing: border-box;
     border: 1px solid transparent;
-    background-color: #F0F0F0;
 }
 .main__info_text_buttons {
     display: flex;
@@ -234,3 +232,105 @@
     background-color:#0080C1;
     border:#0080C1;
 }
+/* Модальное окно отзывов */
+.modalTwo {
+    position: fixed; /* изменено с position: absolute */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(5px);
+    background-color: rgba(4, 108, 206, 0.15);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
+  .modalContentTwo {
+    padding-left: 50px;
+    padding-right: 100px;
+    padding-top: 20px;
+    padding-bottom: 60px;
+    width: 650px;
+    height: 820px;
+    background-color: #fff;
+    border: 1px solid #fff;
+    border-radius: 10px;
+    position: relative;
+    display: flex;
+    gap: 25px;
+  }
+  .modal_formTwo {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
+    gap: 20px;
+  }
+  .modal_form_titleTwo {
+    font-size: 32px;
+    font-weight: 500;
+  }
+  .modal_form_blockTwo {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 10px;
+  }
+  .modal_block {
+    height: 124px;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 12px;
+  }
+  .modal_block_infoTwo {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .modal_block_authorTwo {
+      display: flex;
+      gap: 10px;
+  }
+  .modal_block_comentTwo {
+      display: flex;
+      flex-direction: column;
+      align-items: start;
+      text-align: left;
+      gap: 10px;
+  }
+  .modal_form_textarea {
+    border: none;
+    resize: none;
+    overflow-y: auto;
+    outline: none;
+    font-family: "Roboto", sans-serif;
+    font-weight: normal;
+    font-size: 16px;
+    width: 100%;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  .save {
+    width: 154px;
+    height: 50px;
+  }
+  .modal_form_inputTwo {
+    resize: none;
+    outline: none;
+    width: 642px;
+    height: 90px;
+    font-family: "Roboto", sans-serif;
+    color: #000000;
+    padding-left: 10px;
+    padding-top: 10px;
+    font-size: 16px;
+    border: transparent;
+    border: 1px solid #d9d9d9;
+    border-radius: 6px;
+  }

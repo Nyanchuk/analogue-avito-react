@@ -16,7 +16,7 @@ export const AppRoutes = () => {
             <Route path="/product/:id" element={<Advpage />}/>
             <Route path="/product/:id/seller/:sellerId" element={<Seller />}/>
             <Route path="/profile" element={<Myprofile isAuthenticated={isTokenGlobal} />} />
-            <Route path="/profile/myproduct" element={<Myadv isAuthenticated={isTokenGlobal} />} />
+            <Route path="/profile/:id" element={<Myadv isAuthenticated={isTokenGlobal} />} />
         </Routes>
     )
 }

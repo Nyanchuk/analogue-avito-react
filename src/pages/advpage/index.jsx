@@ -7,7 +7,7 @@ import exits from '../../img/main_img/exit.svg'
 import hover from '../../img/main_img/hover_exit.svg'
 import notImage from '../../img/main_img/no-pictures.png'
 import { Link, useParams } from 'react-router-dom';
-import { getAds, getNewCommentText, refreshAccessToken } from '../../api';
+import { getAds, getNewCommentText } from '../../api';
 import { getAllCommets } from '../../api';
 import { useSelector } from 'react-redux';
 

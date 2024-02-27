@@ -77,7 +77,6 @@ const Header = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [modalRef]);
-  
   // Регистрация
   const handleRegisterUser = () => {
     const role = 'user';
@@ -176,27 +175,27 @@ const Header = () => {
     localStorage.removeItem('refreshToken');
     dispatch(setTokenExists(false))
   }
-// Обработка состояния картинок
-const handleImageUpload = (event) => {
-  const file = event.target.files[0];
-  
-  // Проверка на тип файла, например, можно ограничить только изображениями
-  if (file.type.startsWith('image/')) {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const newPhoto = {
-        url: reader.result,
-        file: file,
+  // Обработка состояния картинок
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    
+    // Проверка на тип файла, например, можно ограничить только изображениями
+    if (file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const newPhoto = {
+          url: reader.result,
+          file: file,
+        };
+        setPhotos([...photos, newPhoto]);
+        console.log(newPhoto)
+        console.log(photos)
       };
-      setPhotos([...photos, newPhoto]);
-      console.log(newPhoto)
-      console.log(photos)
-    };
-    reader.readAsDataURL(file);
-  } else {
-    alert('Пожалуйста, выберите изображение.');
-  }
-};
+      reader.readAsDataURL(file);
+    } else {
+      alert('Пожалуйста, выберите изображение.');
+    }
+  };
   // Новое объявление
   const handlePublish = async () => {
     const title = document.getElementById('title').value;

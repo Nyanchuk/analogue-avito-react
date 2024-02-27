@@ -3,7 +3,7 @@ import styles from './styles.module.css';
 import { Link } from 'react-router-dom';
 import notImage from '../../img/main_img/no-pictures.png'
 
-function ProductCard({ product }) {
+function ProductCard({ product, editLink  }) {
   // Достаем первую картинку продукта
   const firstImageUrl = product.images.length > 0 ? product.images[0].url : '';
   // Достаем и преобразуем дату объявления
@@ -22,7 +22,7 @@ function ProductCard({ product }) {
           )}
         </div>
           <div className={styles.card__content}>
-            <Link to={`/product/${product.id}`} className={styles.card__title}>{product.title}</Link>
+            <Link to={editLink ? editLink : `/product/${product.id}`} className={styles.card__title}>{product.title}</Link>
             <p className={styles.card__price}>{product.price} ₽</p>
             <p className={styles.card__place}>{product.user.city}</p>
             <p className={styles.card__date}>{formattedDate}</p>

@@ -5,7 +5,7 @@ import Return from '../../components/Return';
 import ProductCard from '../../components/ProductCard';
 import user from '../../img/main_img/photo_user.png';
 import { useNavigate } from 'react-router-dom';
-import { getAllAds, getMyProfile, refreshAccessToken, setUpdateUser, uploadUserPhoto } from '../../api';
+import { getAllAds, getMyProfile, setUpdateUser, uploadUserPhoto } from '../../api';
 
 export const Myprofile = ({ isAuthenticated }) => {
   const navigate = useNavigate();
@@ -159,7 +159,7 @@ const updatePhotoUser = async (event) => {
           <div className={styles.main__h3}>Мои товары</div>
           <div className={styles.main__content}>
           {products.map(filteredProduct => (
-            <ProductCard key={filteredProduct.id} product={filteredProduct} sellerId={users.id}/>
+            <ProductCard key={filteredProduct.id} product={filteredProduct} sellerId={users.id} editLink={`/profile/${filteredProduct.id}`} />
           ))}
           </div>
         </div>
