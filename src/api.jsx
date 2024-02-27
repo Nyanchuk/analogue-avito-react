@@ -313,7 +313,7 @@ export const uploadImages = async (adId, photos) => {
 
     for (let i = 0; i < photos.length; i++) {
       const photo = photos[i];
-      formData.append('image', photo.file); // Добавляем файл в объект FormData
+      formData.append('file', photo.file); // Добавляем файл в объект FormData
     }
 
     const response = await fetch(`${host}ads/${adId}/image`, {
