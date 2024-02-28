@@ -5,6 +5,7 @@ import user from "../../img/main_img/photo_user.png";
 import exits from "../../img/main_img/exit.svg";
 import hover from "../../img/main_img/hover_exit.svg";
 import notImage from "../../img/main_img/no-pictures.png";
+import add_photo from '../../img/main_img/add-image.png'
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -38,6 +39,10 @@ export const Myadv = ({ isAuthenticated }) => {
   const [totalComments, setTotalComments] = useState("");
   // Стейт для хранения ошибок
   const [error, setError] = useState("");
+  // Стейт для хранения окна предупреждения
+  const [warningOpenModal, getWarningOpenModal] = useState("");
+    // Стейт для хранения фото перед отправкой
+    const [photos, setPhotos] = useState([]);
 
   // Проверка авторизации
   useEffect(() => {
@@ -62,11 +67,16 @@ export const Myadv = ({ isAuthenticated }) => {
   const openModalClickTwo = () => {
     setOpenModalTwo(true);
   };
+  // Открывает модальное окно предупреждения
+  const openModalClickWarning = () => {
+    getWarningOpenModal(true);
+  }
   // Закрывает модальное окно
   const closeModal = () => {
     setOpenModal(false);
     setIsHovered(false);
     setOpenModalTwo(false);
+    getWarningOpenModal(false)
   };
   // Закрывает модальное окно при клике за его пределами
   useEffect(() => {
@@ -111,6 +121,9 @@ export const Myadv = ({ isAuthenticated }) => {
         const data = await getAds(id);
         setProducts([data]);
         console.log(data);
+        const imageObjects = data.images;
+        console.log(imageObjects)
+        setPhotos(imageObjects);
         const createdDate = new Date(data.created_on);
         const formattedDate = `${createdDate.toLocaleDateString(
           "ru-RU"
@@ -184,6 +197,48 @@ export const Myadv = ({ isAuthenticated }) => {
       setError("Ошибка при удалении объявления");
     }
   };
+
+
+
+    // Обработка состояния картинок
+    const handleImageUpload = (event) => {
+      const file = event.target.files[0];
+      
+      // Проверка на тип файла, например, можно ограничить только изображениями
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const newPhoto = {
+            url: reader.result,
+            file: file,
+          };
+          setPhotos([...photos, newPhoto]);
+          console.log(newPhoto)
+          console.log(photos)
+        };
+        reader.readAsDataURL(file);
+      } else {
+        alert('Пожалуйста, выберите изображение.');
+      }
+    };
+    // Новое объявление
+    // const handlePublish = async () => {
+    //   const title = document.getElementById('title').value;
+    //   const description = document.getElementById('description').value;
+    //   const price = document.getElementById('price').value;
+    //   console.log(photos)
+    //   // Отправка текста обьявление
+    //   const adData = await getNewMyAds(title, description, price);
+    //   const adId = adData.id;
+    //   // Отправка фото к объявлению
+    //   const result = await uploadImages(adId, photos);
+    //   console.log(result);
+    //   if (onAddNewAd) {
+    //     onAddNewAd();
+    //     closeModal();
+    //   }
+      
+    // };
 
   return (
     <div>
@@ -267,18 +322,18 @@ export const Myadv = ({ isAuthenticated }) => {
                     </button>
                     <button
                       className={`${styles.main_button} ${styles.delete}`}
-                      onClick={() => deleteMyAds(id)}
+                      onClick={() => openModalClickWarning()}
                     >
                       Снять с публикации
                     </button>
                   </div>
                 </div>
                 <div className={styles.main__info_text_seller}>
-                  <img
-                    className={styles.main__container_img}
-                    src={user}
-                    alt="photo user"
-                  />
+                {product.user.avatar ? (
+                      <img className={styles.main__container_img} src={`http://localhost:8090/${product.user.avatar}`} alt='photo user'/>
+                    ) : (
+                      <img className={styles.main__container_img} src={user} alt='photo user'/>
+                    )}
                   <div className={styles.main__detailed}>
                     <span style={{ color: "#009EE4", fontWeight: "bold" }}>
                       {product.user.name}
@@ -318,7 +373,7 @@ export const Myadv = ({ isAuthenticated }) => {
                 Опубликовать
               </button>
               <div className={styles.modal_form_blockTwo}>
-                <div className={styles.modal_form_textarea}>
+                <div className={styles.modal_form_textareaTwo}>
                   {comments.map((comment) => (
                     <div key={comment.id} className={styles.modal_block}>
                       {comment.author.avatar ? (
@@ -388,17 +443,25 @@ export const Myadv = ({ isAuthenticated }) => {
                   <textarea
                     className={styles.modal_form_textarea}
                     placeholder="Описание продукта"
-                    defaultValue={product.text}
+                    defaultValue={product.description}
                   />
                 </div>
                 <div className={styles.modal_form_img}>
                   <span>Фотограции товара</span>
                   <div className={styles.main__info_addition}>
-                    <img className={styles.addition} />
-                    <img className={styles.addition} />
-                    <img className={styles.addition} />
-                    <img className={styles.addition} />
-                    <img className={styles.addition} />
+                  {photos.map((photo, index) => (
+          
+                          <img key={index} src={photo.url} alt={`Photo ${index}`} className={styles.addition}/>
+
+                        ))}
+                        {photos.length < 5 && (
+                          <div>
+                            <input type="file" accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} />
+                            <label>
+                                <img src={add_photo} alt="Add Photo" onClick={() => document.querySelector('input[type="file"]').click()} className={styles.addition}/>
+                            </label>
+                          </div>
+                        )}
                   </div>
                 </div>
                 <div className={styles.modal_form_block}>
@@ -408,13 +471,8 @@ export const Myadv = ({ isAuthenticated }) => {
                       className={styles.modal_form_price}
                       type="text"
                       placeholder="Название продукта"
-                      defaultValue={product.price}
-                    />
-                    <select className={styles.currency_select}>
-                      <option value="rub">₽</option>
-                      <option value="usd">$</option>
-                      <option value="eur">€</option>
-                    </select>
+                      defaultValue={product.price} 
+                    />                 
                   </div>
                 </div>
                 <button className={`${styles.main_button} ${styles.save}`}>
@@ -430,6 +488,17 @@ export const Myadv = ({ isAuthenticated }) => {
               className={styles.closeButton}
               alt="exit"
             />
+          </div>
+        </div>
+      )}
+      {warningOpenModal && (
+        <div className={styles.modal__warning}>
+          <div className={styles.modalContent__warning} ref={modalRef}>
+            <span>Вы действительно хотите снять объявление с публикации?</span>
+            <div className={styles.warning__button}>
+              <button className={ styles.del} onClick={() => deleteMyAds(id)}>УДАЛИТЬ</button>
+              <button className={styles.return} onClick={closeModal}>ОТМЕНА</button>
+            </div>
           </div>
         </div>
       )}

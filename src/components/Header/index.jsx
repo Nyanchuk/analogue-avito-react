@@ -327,11 +327,7 @@ const Header = ({ onAddNewAd }) => {
                         <span>Цена</span>
                         <div>
                           <input id='price' className={styles.modal_form_price} type='text' placeholder='Цена'/>
-                          <select className={styles.currency_select}>
-                            <option value='rub'>₽</option>
-                            <option value='usd'>$</option>
-                            <option value='eur'>€</option>
-                          </select>
+                          
                         </div>
                       </div>
                       <button type='button' onClick={handlePublish} className={`${styles.main_button} ${styles.save}`} disabled={!isTokenGlobal}>
