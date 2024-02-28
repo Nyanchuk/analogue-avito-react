@@ -7,6 +7,8 @@ import { getAllAds } from '../../api';
 
 export const Main = () => {
   const [products, setProducts] = useState([]);
+  // Стейт для хранения ошибок
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -21,9 +23,20 @@ export const Main = () => {
 
     fetchData();
   }, []);
+  // Функция для обновления страницы после добавления нового объявления
+const fetchAndUpdateProducts = async () => {
+  try {
+    const data = await getAllAds();
+    setProducts(data);
+    console.log(data)
+  } catch (error) {
+    console.error(error);
+    setError('Произошла ошибка: ' + error.message);
+  }
+};
   return (
     <div className={styles.container}>
-      <Header />
+      <Header  onAddNewAd={fetchAndUpdateProducts} />
       <div className={styles.conteiners}>
         <Search />
         <div className={styles.main__container}>

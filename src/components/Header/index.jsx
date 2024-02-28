@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getMyProfile, getNewAdWithoutPhotos, getNewMyAds, sendAuthenticationToServer, sendRegistrationDataToServer, uploadImages } from '../../api';
 import { setTokenExists } from '../../store/actions/creators/productCreators';
 
-const Header = () => {
+const Header = ({ onAddNewAd }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   // Стейт для открытия модального окна
@@ -208,6 +208,11 @@ const Header = () => {
     // Отправка фото к объявлению
     const result = await uploadImages(adId, photos);
     console.log(result);
+    if (onAddNewAd) {
+      onAddNewAd();
+      closeModal();
+    }
+    
   };
 
 

@@ -91,9 +91,25 @@ export const Myprofile = ({ isAuthenticated }) => {
       setUsers(userProfile);
     }
   };
+  // Функция для обновления страницы после добавления нового объявления
+const fetchAndUpdateProducts = async () => {
+  try {
+    const userProfile = await getMyProfile();
+    console.log(userProfile);
+    setUsers(userProfile);
+    // Получение всех объявлений
+    const allAdsData = await getAllAds();
+    console.log(allAdsData);
+    const filteredProducts = allAdsData.filter(product => product.user.id === Number(userProfile.id));
+    setProducts(filteredProducts);
+  } catch (error) {
+    console.error(error);
+    setError('Произошла ошибка: ' + error.message);
+  }
+};
     return (
       <div>
-      <Header />
+     <Header onAddNewAd={fetchAndUpdateProducts} />
       <div className={styles.conteiners}>
         <Return />
           <div key={users.id} className={styles.main__container}>
