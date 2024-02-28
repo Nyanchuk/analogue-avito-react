@@ -385,3 +385,30 @@ export const setUpdateUser = async ({
     }
   }
 };
+
+// DELETE
+// Удаление объявления
+export const deleteItemAds = async (id) => {
+  try {
+    const accessToken = localStorage.getItem("accessToken");
+    const response = await fetch(`${host}ads/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else if (response.status === 401) {
+      await refreshAccessToken();
+      return await deleteItemAds(id);
+    } else {
+      throw new Error("Ошибка при отправке данных на сервер");
+    }
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};

@@ -9,7 +9,7 @@ import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Return from "../../components/Return";
-import { getAds, getNewCommentText } from "../../api";
+import { getAds, getNewCommentText, deleteItemAds } from "../../api";
 import { getAllCommets } from "../../api";
 
 export const Myadv = ({ isAuthenticated }) => {
@@ -173,6 +173,17 @@ export const Myadv = ({ isAuthenticated }) => {
     
     fetchData();
   }, [id]);
+  // Удаление объявления
+  const deleteMyAds = async (id) => {
+    try {
+      await deleteItemAds(id);
+      console.log('Ваше объявление удалено');
+      navigate('/profile')
+    } catch (error) {
+      console.error(error);
+      setError("Ошибка при удалении объявления");
+    }
+  };
 
   return (
     <div>
@@ -256,6 +267,7 @@ export const Myadv = ({ isAuthenticated }) => {
                     </button>
                     <button
                       className={`${styles.main_button} ${styles.delete}`}
+                      onClick={() => deleteMyAds(id)}
                     >
                       Снять с публикации
                     </button>

@@ -202,9 +202,10 @@ const Header = () => {
     const description = document.getElementById('description').value;
     const price = document.getElementById('price').value;
     console.log(photos)
-  
+    // Отправка текста обьявление
     const adData = await getNewMyAds(title, description, price);
     const adId = adData.id;
+    // Отправка фото к объявлению
     const result = await uploadImages(adId, photos);
     console.log(result);
   };

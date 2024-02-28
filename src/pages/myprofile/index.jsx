@@ -79,18 +79,18 @@ export const Myprofile = ({ isAuthenticated }) => {
           });
     }
   };
-// Обновление фото юзера
-const updatePhotoUser = async (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    const formData = new FormData();
-    formData.append('file', file);
-    await uploadUserPhoto(formData);
-    // После успешной загрузки изображения, обновляем информацию о профиле
-    const userProfile = await getMyProfile();
-    setUsers(userProfile);
-  }
-};
+  // Обновление фото юзера
+  const updatePhotoUser = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append('file', file);
+      await uploadUserPhoto(formData);
+      // После успешной загрузки изображения, обновляем информацию о профиле
+      const userProfile = await getMyProfile();
+      setUsers(userProfile);
+    }
+  };
     return (
       <div>
       <Header />
