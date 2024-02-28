@@ -41,8 +41,10 @@ export const Myadv = ({ isAuthenticated }) => {
   const [error, setError] = useState("");
   // Стейт для хранения окна предупреждения
   const [warningOpenModal, getWarningOpenModal] = useState("");
-    // Стейт для хранения фото перед отправкой
-    const [photos, setPhotos] = useState([]);
+  // Стейт для хранения фото перед отправкой
+  const [photos, setPhotos] = useState([]);
+  // Инициализация стейта для хранения удаленных изображений
+  const [imagesToDelete, setImagesToDelete] = useState([]);
 
   // Проверка авторизации
   useEffect(() => {
@@ -76,7 +78,17 @@ export const Myadv = ({ isAuthenticated }) => {
     setOpenModal(false);
     setIsHovered(false);
     setOpenModalTwo(false);
-    getWarningOpenModal(false)
+    getWarningOpenModal(false);
+    setImagesToDelete([]);
+    getAds(id).then((data) => {
+      setProducts([data]);
+      console.log(data);
+      const imageObjects = data.images;
+      console.log(imageObjects)
+      setPhotos(imageObjects);
+    }).catch((error) => {
+      // Обработка ошибки получения объявлений
+    });
   };
   // Закрывает модальное окно при клике за его пределами
   useEffect(() => {
@@ -218,23 +230,16 @@ export const Myadv = ({ isAuthenticated }) => {
     }
   };
   // Удаление фото
-  const handleRemovePhoto = async (index, id) => {
+  const handleRemovePhoto = (index) => {
     if (photos[index].url.startsWith('data:image')) {
       // Удаляем изображение из массива photos (добавленное с компьютера)
       const newPhotos = photos.filter((_, i) => i !== index);
       setPhotos(newPhotos);
     } else {
-      try {
-        const deletedImage = await deleteImageAds(id, photos[index].url);
-        if (deletedImage) {
-          const newPhotos = photos.filter((_, i) => i !== index);
-          setPhotos(newPhotos);
-        } else {
-          // Обработка ошибки удаления изображения
-        }
-      } catch (error) {
-        // Обработка ошибки удаления изображения
-      }
+      // Добавляем изображение в стейт для удаления
+      setImagesToDelete((prevImages) => [...prevImages, photos[index]]);
+      const newPhotos = photos.filter((_, i) => i !== index);
+      setPhotos(newPhotos);
     }
   };
   // Новое объявление
@@ -249,12 +254,16 @@ export const Myadv = ({ isAuthenticated }) => {
     // Отправка изображений к объявлению
     const result = await uploadImages(adId, filteredPhotos);
     console.log(result);
-    const data = await getAds(id);
-        setProducts([data]);
-        console.log(data);
-        const imageObjects = data.images;
-        console.log(imageObjects)
-        setPhotos(imageObjects);
+    if (imagesToDelete.length > 0) {
+      try {
+        for (const image of imagesToDelete) {
+          await deleteImageAds(id, image.url);
+        }
+        // Очистка списка изображений для удаления
+        setImagesToDelete([]);
+      } catch (error) {
+        // Обработка ошибки удаления изображений
+      }}
         closeModal();
   };
 
