@@ -279,7 +279,7 @@ export const getNewAdWithoutPhotos = async ({title, description, price}) => {
     throw new Error(error.message);
   }
 };
-// Отправка нового объявления с фото
+// Отправка нового объявления
 export const getNewMyAds = async (title, description, price ) => {
   try {
     const accessToken = localStorage.getItem("accessToken");
@@ -381,6 +381,36 @@ export const setUpdateUser = async ({
     }
   }
 };
+// Обновление объявления (текстовая часть)
+export const setUpdateAds = async ( id, title, description, price ) => {
+  try {
+    const accessToken = localStorage.getItem("accessToken");
+    const response = await fetch(`${host}ads/${id}`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: title,
+        description: description,
+        price: price,
+      }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else if (response.status === 401) {
+      await refreshAccessToken();
+      return await setUpdateAds( id, title, description, price );
+    } else {
+      throw new Error("Ошибка при отправке данных на сервер");
+    }
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
 
 // DELETE
 // Удаление объявления
@@ -401,6 +431,32 @@ export const deleteItemAds = async (id) => {
     } else if (response.status === 401) {
       await refreshAccessToken();
       return await deleteItemAds(id);
+    } else {
+      throw new Error("Ошибка при отправке данных на сервер");
+    }
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+// Удаление картинки из объявления
+export const deleteImageAds = async ( id, fileUrl ) => {
+  try {
+    const accessToken = localStorage.getItem("accessToken");
+    const url = `${host}ads/${id}/image?file_url=${encodeURIComponent(fileUrl)}`;
+    const response = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else if (response.status === 401) {
+      await refreshAccessToken();
+      return await deleteImageAds( id, fileUrl );
     } else {
       throw new Error("Ошибка при отправке данных на сервер");
     }

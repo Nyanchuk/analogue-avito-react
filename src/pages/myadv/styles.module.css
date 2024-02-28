@@ -361,7 +361,7 @@
     align-items: center;
     gap: 25px;
     font-size: 24px;
-    color: #b56565;
+    color: #aaaaaa;
   }
   .warning__button {
     display: flex;
@@ -370,26 +370,30 @@
   .del {
     cursor: pointer;
     background-color: transparent;
-    border: 2px dashed #be4a4a;
-    color: #be4a4a;
-    width: 154px;
+    border: 1px dashed #fb9696;
+    border-radius: 10px;
+    color: #fb9696;
+    width: 145px;
     height: 50px;
-    font-size: 22px;
+    font-size: 20px;
     transition: all .3s;
   }
   .del:hover {
-    background-color: #be4a4a29;
+    background-color: #fb969629;
+    border: 1px dashed transparent;
   }
   .return {
     cursor: pointer;
     background-color: transparent;
-    border: 2px dashed #7ebe4a;
-    color: #7ebe4a;
-    width: 154px;
+    border: 1px dashed #5a9fe0;
+    border-radius: 10px;
+    color: #5a9fe0;
+    width: 145px;
     height: 50px;
-    font-size: 22px;
+    font-size: 20px;
     transition: all .3s;
   }
   .return:hover {
-    background-color: #7ebe4a29;
+    background-color: #5a9fe029;
+    border: 1px dashed transparent;
   }

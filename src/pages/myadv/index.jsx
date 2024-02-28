@@ -10,7 +10,7 @@ import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Return from "../../components/Return";
-import { getAds, getNewCommentText, deleteItemAds } from "../../api";
+import { getAds, getNewCommentText, deleteItemAds, uploadImages, setUpdateAds, deleteImageAds } from "../../api";
 import { getAllCommets } from "../../api";
 
 export const Myadv = ({ isAuthenticated }) => {
@@ -197,53 +197,66 @@ export const Myadv = ({ isAuthenticated }) => {
       setError("Ошибка при удалении объявления");
     }
   };
-
-
-
-    // Обработка состояния картинок
-    const handleImageUpload = (event) => {
+  // Обработка состояния картинок
+  const handleImageUpload = (event) => {
       const file = event.target.files[0];
-      
-      // Проверка на тип файла, например, можно ограничить только изображениями
-      if (file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          const newPhoto = {
-            url: reader.result,
-            file: file,
-          };
-          setPhotos([...photos, newPhoto]);
-          console.log(newPhoto)
-          console.log(photos)
+    // Проверка на тип файла, например, можно ограничить только изображениями
+    if (file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const newPhoto = {
+          url: reader.result,
+          file: file,
         };
-        reader.readAsDataURL(file);
-      } else {
-        alert('Пожалуйста, выберите изображение.');
-      }
-    };
-  // Удаление фото
-  const handleRemovePhoto = (index) => {
-    const newPhotos = photos.filter((_, i) => i !== index);
-    setPhotos(newPhotos);
+        setPhotos([...photos, newPhoto]);
+        console.log(newPhoto)
+        console.log(photos)
+      };
+      reader.readAsDataURL(file);
+    } else {
+      alert('Пожалуйста, выберите изображение.');
+    }
   };
-    // Новое объявление
-    // const handlePublish = async () => {
-    //   const title = document.getElementById('title').value;
-    //   const description = document.getElementById('description').value;
-    //   const price = document.getElementById('price').value;
-    //   console.log(photos)
-    //   // Отправка текста обьявление
-    //   const adData = await getNewMyAds(title, description, price);
-    //   const adId = adData.id;
-    //   // Отправка фото к объявлению
-    //   const result = await uploadImages(adId, photos);
-    //   console.log(result);
-    //   if (onAddNewAd) {
-    //     onAddNewAd();
-    //     closeModal();
-    //   }
-      
-    // };
+  // Удаление фото
+  const handleRemovePhoto = async (index, id) => {
+    if (photos[index].url.startsWith('data:image')) {
+      // Удаляем изображение из массива photos (добавленное с компьютера)
+      const newPhotos = photos.filter((_, i) => i !== index);
+      setPhotos(newPhotos);
+    } else {
+      try {
+        const deletedImage = await deleteImageAds(id, photos[index].url);
+        if (deletedImage) {
+          const newPhotos = photos.filter((_, i) => i !== index);
+          setPhotos(newPhotos);
+        } else {
+          // Обработка ошибки удаления изображения
+        }
+      } catch (error) {
+        // Обработка ошибки удаления изображения
+      }
+    }
+  };
+  // Новое объявление
+  const handlePublish = async (id) => {
+    const title = document.getElementById('title').value;
+    const description = document.getElementById('description').value;
+    const price = document.getElementById('price').value;
+    const filteredPhotos = photos.filter((photo) => photo.url.startsWith('data:image'));
+    // Отправка текста объявления
+    const adData = await setUpdateAds(id, title, description, price);
+    const adId = adData.id;
+    // Отправка изображений к объявлению
+    const result = await uploadImages(adId, filteredPhotos);
+    console.log(result);
+    const data = await getAds(id);
+        setProducts([data]);
+        console.log(data);
+        const imageObjects = data.images;
+        console.log(imageObjects)
+        setPhotos(imageObjects);
+        closeModal();
+  };
 
   return (
     <div>
@@ -437,6 +450,7 @@ export const Myadv = ({ isAuthenticated }) => {
                 <div className={styles.modal_form_block}>
                   <span>Название</span>
                   <input
+                    id="title"
                     className={styles.modal_form_input}
                     type="text"
                     placeholder="Название продукта"
@@ -446,6 +460,7 @@ export const Myadv = ({ isAuthenticated }) => {
                 <div className={styles.modal_form_block}>
                   <span>Описание</span>
                   <textarea
+                    id="description"
                     className={styles.modal_form_textarea}
                     placeholder="Описание продукта"
                     defaultValue={product.description}
@@ -455,7 +470,7 @@ export const Myadv = ({ isAuthenticated }) => {
                   <span>Фотограции товара</span>
                   <div className={styles.main__info_addition}>
                   {photos.map((photo, index) => (
-                        <img key={index} onClick={() => handleRemovePhoto(index)} src={photo.url.startsWith('data:image') ? photo.url : `http://localhost:8090/${photo.url}`}  alt={`Photo ${index}`} className={styles.addition}/>
+                        <img key={index} onClick={() => handleRemovePhoto(index, id)} src={photo.url.startsWith('data:image') ? photo.url : `http://localhost:8090/${photo.url}`}  alt={`Photo ${index}`} className={styles.addition}/>
                         ))}
                         {photos.length < 5 && (
                           <div>
@@ -476,6 +491,7 @@ export const Myadv = ({ isAuthenticated }) => {
                   <span>Цена</span>
                   <div>
                     <input
+                      id="price"
                       className={styles.modal_form_price}
                       type="text"
                       placeholder="Название продукта"
@@ -483,7 +499,7 @@ export const Myadv = ({ isAuthenticated }) => {
                     />                 
                   </div>
                 </div>
-                <button className={`${styles.main_button} ${styles.save}`}>
+                <button type="button" onClick={() => {handlePublish(id)}} className={`${styles.main_button} ${styles.save}`}>
                   Сохранить
                 </button>
               </form>
