@@ -309,30 +309,26 @@ export const getNewMyAds = async (title, description, price ) => {
 export const uploadImages = async (adId, photos) => {
   try {
     const accessToken = localStorage.getItem("accessToken");
-    const formData = new FormData();
+    const promises = photos.map(async (photo, index) => {
+      const formData = new FormData();
+      formData.append('file', photo.file);
+      const response = await fetch(`${host}ads/${adId}/image`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: formData,
+      });
 
-    for (let i = 0; i < photos.length; i++) {
-      const photo = photos[i];
-      formData.append('file', photo.file); // Добавляем файл в объект FormData
-    }
-
-    const response = await fetch(`${host}ads/${adId}/image`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: formData,
+      if (response.ok) {
+        return await response.json();
+      } else {
+        throw new Error(`Ошибка при отправке изображения ${index + 1} на сервер`);
+      }
     });
 
-    if (response.ok) {
-      const data = await response.json();
-      return data; // Возвращаем ответ от сервера
-    } else if (response.status === 401) {
-      await refreshAccessToken();
-      return await uploadImages(adId, photos);
-    } else {
-      throw new Error("Ошибка при отправке изображений на сервер");
-    }
+    const results = await Promise.all(promises);
+    return results;
   } catch (error) {
     throw new Error(error.message);
   }

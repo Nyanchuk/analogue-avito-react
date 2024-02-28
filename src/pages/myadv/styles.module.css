@@ -52,6 +52,8 @@
     gap: 10px;
 }
 .main__info_bas {
+    -o-object-fit: cover;
+    object-fit: cover;
     width: 480px;
     height: 480px;
     box-sizing: border-box;
