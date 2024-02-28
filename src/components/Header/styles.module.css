@@ -37,7 +37,7 @@
     width: 124px;
     height: 40px;
     background-color:#009EE4;
-    border: 1px solid rgb(251, 198, 214);
+    border: 1px dashed rgb(251, 198, 214);
     border-radius: 10px;
     color: rgb(251, 198, 214);
     font-size: 16px;
@@ -45,7 +45,7 @@
 }
 .main_button_exit:hover {
     background-color:rgba(251, 198, 214, 0.287);
-    border: 1px solid rgb(251, 198, 214);
+    border: 1px dashed transparent;
     color: rgb(246, 212, 223);
 }
 .main_button:hover {
