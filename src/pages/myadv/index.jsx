@@ -472,19 +472,24 @@ export const Myadv = ({ isAuthenticated }) => {
                   {photos.map((photo, index) => (
                         <img key={index} onClick={() => handleRemovePhoto(index, id)} src={photo.url.startsWith('data:image') ? photo.url : `http://localhost:8090/${photo.url}`}  alt={`Photo ${index}`} className={styles.addition}/>
                         ))}
-                        {photos.length < 5 && (
-                          <div>
-                            <input 
-                              type="file" 
-                              accept="image/*" 
-                              onChange={handleImageUpload} 
-                              style={{ display: 'none' }}
+                        {[...Array(Math.max(0, 5 - photos.length))].map((_, index) => (
+                        <div key={index}>
+                          <input 
+                            type="file" 
+                            accept="image/*" 
+                            onChange={handleImageUpload} 
+                            style={{ display: 'none' }}
+                          />
+                          <label>
+                            <img 
+                              src={add_photo} 
+                              alt="Добавить фото" 
+                              onClick={() => document.querySelectorAll('input[type="file"]')[index].click()} 
+                              className={styles.addition}
                             />
-                            <label>
-                                <img src={add_photo} alt="Add Photo" onClick={() => document.querySelector('input[type="file"]').click()} className={styles.addition}/>
-                            </label>
-                          </div>
-                        )}
+                          </label>
+                        </div>
+                      ))}
                   </div>
                 </div>
                 <div className={styles.modal_form_block}>

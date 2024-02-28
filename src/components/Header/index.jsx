@@ -316,21 +316,30 @@ const Header = ({ onAddNewAd }) => {
                         {photos.map((photo, index) => (
                           <img key={index} onClick={() => handleRemovePhoto(index)} src={photo.url} alt={`Photo ${index}`} className={styles.addition}/>
                         ))}
-                        {photos.length < 5 && (
-                          <div>
-                            <input type="file" accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} />
-                            <label>
-                                <img src={add_photo} alt="Add Photo" onClick={() => document.querySelector('input[type="file"]').click()} className={styles.addition}/>
-                            </label>
-                          </div>
-                        )}
+                        {[...Array(Math.max(0, 5 - photos.length))].map((_, index) => (
+                        <div key={index}>
+                          <input 
+                            type="file" 
+                            accept="image/*" 
+                            onChange={handleImageUpload} 
+                            style={{ display: 'none' }}
+                          />
+                          <label>
+                            <img 
+                              src={add_photo} 
+                              alt="Добавить фото" 
+                              onClick={() => document.querySelectorAll('input[type="file"]')[index].click()} 
+                              className={styles.addition}
+                            />
+                          </label>
+                        </div>
+                      ))}
                     </div>
                       </div>
                       <div className={styles.modal_form_block}>
                         <span>Цена</span>
                         <div>
                           <input id='price' className={styles.modal_form_price} type='text' placeholder='Цена'/>
-                          
                         </div>
                       </div>
                       <button type='button' onClick={handlePublish} className={`${styles.main_button} ${styles.save}`} disabled={!isTokenGlobal}>
