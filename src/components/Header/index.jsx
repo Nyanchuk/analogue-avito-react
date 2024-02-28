@@ -214,8 +214,11 @@ const Header = ({ onAddNewAd }) => {
     }
     
   };
-
-
+  // Удаление фото
+  const handleRemovePhoto = (index) => {
+    const newPhotos = photos.filter((_, i) => i !== index);
+    setPhotos(newPhotos);
+  };
 
   return (
     <div className={styles.wrapper}>
@@ -311,7 +314,7 @@ const Header = ({ onAddNewAd }) => {
                         <div className={styles.main__info_addition}>
 
                         {photos.map((photo, index) => (
-                          <img key={index} src={photo.url} alt={`Photo ${index}`} className={styles.addition}/>
+                          <img key={index} onClick={() => handleRemovePhoto(index)} src={photo.url} alt={`Photo ${index}`} className={styles.addition}/>
                         ))}
                         {photos.length < 5 && (
                           <div>

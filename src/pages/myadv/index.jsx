@@ -221,6 +221,11 @@ export const Myadv = ({ isAuthenticated }) => {
         alert('Пожалуйста, выберите изображение.');
       }
     };
+  // Удаление фото
+  const handleRemovePhoto = (index) => {
+    const newPhotos = photos.filter((_, i) => i !== index);
+    setPhotos(newPhotos);
+  };
     // Новое объявление
     // const handlePublish = async () => {
     //   const title = document.getElementById('title').value;
@@ -450,13 +455,16 @@ export const Myadv = ({ isAuthenticated }) => {
                   <span>Фотограции товара</span>
                   <div className={styles.main__info_addition}>
                   {photos.map((photo, index) => (
-          
-                          <img key={index} src={photo.url} alt={`Photo ${index}`} className={styles.addition}/>
-
+                        <img key={index} onClick={() => handleRemovePhoto(index)} src={photo.url.startsWith('data:image') ? photo.url : `http://localhost:8090/${photo.url}`}  alt={`Photo ${index}`} className={styles.addition}/>
                         ))}
                         {photos.length < 5 && (
                           <div>
-                            <input type="file" accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} />
+                            <input 
+                              type="file" 
+                              accept="image/*" 
+                              onChange={handleImageUpload} 
+                              style={{ display: 'none' }}
+                            />
                             <label>
                                 <img src={add_photo} alt="Add Photo" onClick={() => document.querySelector('input[type="file"]').click()} className={styles.addition}/>
                             </label>
