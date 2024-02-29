@@ -74,7 +74,6 @@ export const Advpage = () => {
       try {
         const data = await getAds(id);
         setProducts([data]);
-        console.log(data);
         const createdDate = new Date(data.created_on);
         const formattedDate = `${createdDate.toLocaleDateString('ru-RU')} ${createdDate.toLocaleTimeString('ru-RU', {hour: '2-digit', minute: '2-digit'})}`;
         setProducts(prevProducts => {
@@ -86,7 +85,6 @@ export const Advpage = () => {
         const formattedSellsDate = formatDate(data.user.sells_from);
         setFormattedSellsFromDate(formattedSellsDate);
       } catch (error) {
-        console.error('Error fetching data:', error);
       }
     };
 
@@ -102,7 +100,6 @@ export const Advpage = () => {
         const totalComments = data.length;
         setTotalComments(totalComments);
       } catch (error) {
-        console.error('Error fetching data:', error);
       }
     };
   
@@ -139,7 +136,6 @@ export const Advpage = () => {
             document.getElementById('comment').value = '';
           })
           .catch((error) => {
-            console.error(error);
             setError('Ошибка при получении комментариев');
           });
     }

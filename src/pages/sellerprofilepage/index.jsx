@@ -11,9 +11,8 @@ export const Seller = () => {
     const [products, setProducts] = useState([]);
     // Стейт для сокрытия номера
     const [showPhoneNumber, setShowPhoneNumber] = useState(false);
-
+    // Получени id объявления
     const { sellerId } = useParams();
-    console.log(sellerId)
 
     // Обработка даты
     function formatDate(dateString) {
@@ -35,9 +34,7 @@ export const Seller = () => {
         try {
           const data = await getAllAds();
           setProducts(data);
-          console.log(data);
         } catch (error) {
-          console.error('Error fetching data:', error);
         }
       };
   

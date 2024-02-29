@@ -1,11 +1,35 @@
-# 1. Работа токенов
+# 1. Название проекта: SkySales
+
+# 2. Описание проекта: 
+- Сайт позволяет пользователям размещать бесплатные объявления о продаже или аренде недвижимости, автомобилей, товаров для дома, одежды, обуви, услуг и многого другого.
+Основные особенности сайта включают:
+1. Простота использования: Пользователи могут легко размещать свои объявления, просматривать предложения других пользователей и связываться с продавцами или покупателями.
+2. Личный кабинет: У зарегистрированных пользователей есть личный кабинет для управления своими объявлениями.
+3. Отзывы: Пользователи могут оставлять отзывы о продавцах и покупателях, что помогает оценить надежность сделок.
+4. Поиск товаров: Пользователи могут найти любой интересующий товар, чем точнее запрос тем уже круг поиска!
+
+# 3. Структура проекта (страницы/компоненты)
+СТРАНИЦЫ:
+- advpage: страница объявления (общий доступ)
+- main: страница главной (общий доступ)
+- myadv: страница моего объявления (частный доступ)
+- myprofile: страница моего профиля (частный доступ)
+- sellerprofilepage: страница профиля продавца (общий доступ)
+КОМПОНЕНТЫ:
+- Header: шапка сайта
+- ProductCard: компонент отображения объявлений
+- Return: "кнопка вернуться на главную"
+- Search: поисковая строка
+
+# 4. Работа токенов
 - Обновление токена происходит если 40 код при:
     - Отправке комментария
     - Получении инфо юзера
     - Патче инфо юзера
     - Отправке аватара юзера
 - Обновление токенов происходит при 401 ошибке отправки данных на сервер
-# 2. Защита данных пользователя
+
+# 5. Защита данных пользователя
 - Страницы профиля и товаров пользователя защищены наличием стейта true в редаксе
 - Возможность оставить комментарий защищена наличием стейта true в редаксе
 - Стейт в редаксе всегда true если:
@@ -13,75 +37,66 @@
     - Если мы перезагружаем страницу
     - Если в локал сторе токены в наличии
 
+# 6. Бэкенд
+- Развернут по адресу: [http://localhost:8090]
 
+# Начало работы с Create React App
+- Этот проект был создан с помощью [Create React App](https://github.com/facebook/create-react-app).
 
-# Getting Started with Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
-In the project directory, you can run:
+## Доступные скрипты
+- В каталоге проекта вы можете запустить:
 
 ### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- Запускает приложение в режиме разработки.
+- Откройте [http://localhost:3000](http://localhost:3000), чтобы увидеть его в своем браузере.
+- Страница будет перезагружена, когда вы вносите изменения.
+- Вы также увидите любые ошибки линтера в консоли.
 
 ### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Запускает тесты в интерактивном режиме наблюдения.
+- См. раздел о запуске тестов [running tests](https://facebook.github.io/create-react-app/docs/running-tests)для получения дополнительной информации.
 
 ### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- Собирает приложение для продакшена в папку build.
+- Он правильно объединяет React в режиме продакшена и оптимизирует сборку для лучшей производительности.
+- Сборка минифицирована, и имена файлов включают хеши.
+- Ваше приложение готово к развертыванию! [deployment](https://facebook.github.io/create-react-app/docs/deployment)
+- См. раздел о развертывании для получения дополнительной информации.
 
 ### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+**Примечание: это односторонняя операция. После того как вы выполните eject, вы не сможете вернуться!**
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- Если вы не удовлетворены инструментом сборки и выбором конфигурации, вы можете выполнить eject в любое время. Эта команда удалит единственную зависимость от сборки из вашего проекта.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- Вместо этого она скопирует все конфигурационные файлы и транзитивные зависимости (webpack, Babel, ESLint и др.) прямо в ваш проект, чтобы у вас был полный контроль над ними. Все команды, кроме eject, по-прежнему будут работать, но они будут указывать на скопированные скрипты, чтобы вы могли их настроить. На этом этапе вы остаетесь сам по себе.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- Вам не обязательно использовать eject. Состав функций подходит для маленьких и средних развертываний, и вам не следует чувствовать себя обязанными использовать эту функцию. Однако мы понимаем, что этот инструмент был бы бесполезен, если бы вы не могли настроить его, когда будете готовы.
 
 ## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- Вы можете узнать больше в [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- Чтобы узнать React, ознакомьтесь с [React documentation](https://reactjs.org/).
 
 ### Code Splitting
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Этот раздел был перемещен сюда: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
 
 ### Analyzing the Bundle Size
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Этот раздел был перемещен сюда: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
 
 ### Making a Progressive Web App
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Этот раздел был перемещен сюда: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
 
 ### Advanced Configuration
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Этот раздел был перемещен сюда: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
 
 ### Deployment
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Этот раздел был перемещен сюда: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
 
 ### `npm run build` fails to minify
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Этот раздел был перемещен сюда: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)

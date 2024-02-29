@@ -37,6 +37,39 @@ export const refreshAccessToken = async () => {
     throw error;
   }
 };
+// Обновление пароля
+export const setNewPassUser = async (password_1, password_2) => {
+  try {
+    const accessToken = localStorage.getItem("accessToken");
+    const response = await fetch(`${host}user/password`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        password_1: password_1,
+        password_2:password_2,
+      }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else if (response.status === 401) {
+      await refreshAccessToken();
+      return await setNewPassUser(password_1, password_2);
+    } else if (response.status === 400) {
+      throw new Error("Вы ввели неверный пароль");
+    } else if (response.status === 422) {
+      throw new Error("Данные неверного формата");
+    } else {
+      throw new Error("Ошибка при отправке данных на сервер");
+    }
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
 
 // GET
 // Все объявления
@@ -51,7 +84,6 @@ export const getAllAds = async () => {
       throw new Error("Failed to fetch data");
     }
   } catch (error) {
-    console.error("Error fetching data:", error);
     throw error;
   }
 };
@@ -67,7 +99,6 @@ export const getAds = async (id) => {
       throw new Error("Failed to fetch data");
     }
   } catch (error) {
-    console.error("Error fetching data:", error);
     throw error;
   }
 };
@@ -83,7 +114,6 @@ export const getAllCommets = async (id) => {
       throw new Error("Failed to fetch data");
     }
   } catch (error) {
-    console.error("Error fetching data:", error);
     throw error;
   }
 };
@@ -110,7 +140,6 @@ export const getMyProfile = async () => {
       error.response &&
       (error.response.status === 422 || error.response.status === 500)
     ) {
-      console.error("Error updating user data:", error);
     } else {
       throw error;
     }
@@ -128,7 +157,6 @@ export const sendRegistrationDataToServer = async ({
   phone,
   city,
 }) => {
-  console.log(password, role, email, name, surname, phone, city);
   try {
     const response = await fetch(`${host}auth/register`, {
       method: "POST",
@@ -236,7 +264,6 @@ export const uploadUserPhoto = async (formData) => {
 
     if (response.ok) {
       const data = await response.json();
-      console.log("Изображение успешно загружено:", data);
     } else if (response.status === 401) {
       await refreshAccessToken();
       return await uploadUserPhoto(formData);
@@ -244,14 +271,12 @@ export const uploadUserPhoto = async (formData) => {
       throw new Error("Failed to fetch data");
     }
   } catch (error) {
-    console.error("Произошла ошибка при загрузке изображения:", error);
-    // Обработка ошибок при загрузке изображения
+    throw new Error(error.message);
   }
 };
 // Отправка обвления без фото
 export const getNewAdWithoutPhotos = async ({title, description, price}) => {
   try {
-    console.log(title, description, price)
     const accessToken = localStorage.getItem("accessToken");
     const priceValue = parseInt(price);
     const response = await fetch(`${host}adstext`, {
@@ -375,7 +400,6 @@ export const setUpdateUser = async ({
       error.response &&
       (error.response.status === 422 || error.response.status === 500)
     ) {
-      console.error("Error updating user data:", error);
     } else {
       throw error;
     }

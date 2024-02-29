@@ -82,10 +82,23 @@ export const Myadv = ({ isAuthenticated }) => {
     setImagesToDelete([]);
     getAds(id).then((data) => {
       setProducts([data]);
-      console.log(data);
       const imageObjects = data.images;
-      console.log(imageObjects)
       setPhotos(imageObjects);
+      const createdDate = new Date(data.created_on);
+        const formattedDate = `${createdDate.toLocaleDateString(
+          "ru-RU"
+        )} ${createdDate.toLocaleTimeString("ru-RU", {
+          hour: "2-digit",
+          minute: "2-digit",
+        })}`;
+        setProducts((prevProducts) => {
+          return prevProducts.map((product) => ({
+            ...product,
+            formattedDate: formattedDate,
+          }));
+        });
+        const formattedSellsDate = formatDate(data.user.sells_from);
+        setFormattedSellsFromDate(formattedSellsDate);
     }).catch((error) => {
       // Обработка ошибки получения объявлений
     });
@@ -132,9 +145,7 @@ export const Myadv = ({ isAuthenticated }) => {
       try {
         const data = await getAds(id);
         setProducts([data]);
-        console.log(data);
         const imageObjects = data.images;
-        console.log(imageObjects)
         setPhotos(imageObjects);
         const createdDate = new Date(data.created_on);
         const formattedDate = `${createdDate.toLocaleDateString(
@@ -152,7 +163,6 @@ export const Myadv = ({ isAuthenticated }) => {
         const formattedSellsDate = formatDate(data.user.sells_from);
         setFormattedSellsFromDate(formattedSellsDate);
       } catch (error) {
-        console.error("Error fetching data:", error);
       }
     };
 
@@ -177,7 +187,6 @@ export const Myadv = ({ isAuthenticated }) => {
             document.getElementById("comment").value = "";
           })
           .catch((error) => {
-            console.error(error);
             setError("Ошибка при получении комментариев");
           });
     }
@@ -188,11 +197,9 @@ export const Myadv = ({ isAuthenticated }) => {
       try {
           const data = await getAllCommets(id);
           setComments(data);
-          console.log(data);
           const totalComments = data.length;
           setTotalComments(totalComments);
         } catch (error) {
-          console.error('Error fetching data:', error);
         }
     };
     
@@ -202,10 +209,8 @@ export const Myadv = ({ isAuthenticated }) => {
   const deleteMyAds = async (id) => {
     try {
       await deleteItemAds(id);
-      console.log('Ваше объявление удалено');
       navigate('/profile')
     } catch (error) {
-      console.error(error);
       setError("Ошибка при удалении объявления");
     }
   };
@@ -221,8 +226,6 @@ export const Myadv = ({ isAuthenticated }) => {
           file: file,
         };
         setPhotos([...photos, newPhoto]);
-        console.log(newPhoto)
-        console.log(photos)
       };
       reader.readAsDataURL(file);
     } else {
@@ -253,7 +256,6 @@ export const Myadv = ({ isAuthenticated }) => {
     const adId = adData.id;
     // Отправка изображений к объявлению
     const result = await uploadImages(adId, filteredPhotos);
-    console.log(result);
     if (imagesToDelete.length > 0) {
       try {
         for (const image of imagesToDelete) {

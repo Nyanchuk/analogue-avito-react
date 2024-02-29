@@ -22,7 +22,6 @@ export const Main = () => {
         setProducts(data);
         setFilterProducts(data);
       } catch (error) {
-        console.error('Error fetching data:', error);
       }
     };
 
@@ -35,7 +34,6 @@ export const Main = () => {
       setProducts(data);
       setFilterProducts(data);
     } catch (error) {
-      console.error(error);
       setError('Произошла ошибка: ' + error.message);
     }
   };
