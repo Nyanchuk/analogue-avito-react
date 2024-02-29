@@ -134,7 +134,6 @@ export const Myprofile = ({ isAuthenticated }) => {
   const fetchAndUpdateProducts = async () => {
     try {
       const userProfile = await getMyProfile();
-      console.log(userProfile);
       setUsers(userProfile);
       // Получение всех объявлений
       const allAdsData = await getAllAds();

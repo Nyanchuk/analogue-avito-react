@@ -188,8 +188,6 @@ const Header = ({ onAddNewAd }) => {
           file: file,
         };
         setPhotos([...photos, newPhoto]);
-        console.log(newPhoto)
-        console.log(photos)
       };
       reader.readAsDataURL(file);
     } else {
@@ -200,19 +198,24 @@ const Header = ({ onAddNewAd }) => {
   const handlePublish = async () => {
     const title = document.getElementById('title').value;
     const description = document.getElementById('description').value;
-    const price = document.getElementById('price').value;
-    console.log(photos)
-    // Отправка текста обьявление
-    const adData = await getNewMyAds(title, description, price);
-    const adId = adData.id;
-    // Отправка фото к объявлению
-    const result = await uploadImages(adId, photos);
-    console.log(result);
-    if (onAddNewAd) {
-      onAddNewAd();
-      closeModal();
-    }
-    
+    const priceInput = document.getElementById('price');
+    const price = priceInput.value;
+    switch(true) {
+      case !price || isNaN(price):
+        priceInput.classList.add(styles.price_blink);
+          setTimeout(() => {
+            priceInput.classList.remove(styles.price_blink);
+          }, 2000);
+          break;
+      default:
+        const adData = await getNewMyAds(title, description, price);
+        const adId = adData.id;
+        const result = await uploadImages(adId, photos);
+        if (onAddNewAd) {
+          onAddNewAd();
+          closeModal();
+        }
+    } 
   };
   // Удаление фото
   const handleRemovePhoto = (index) => {
@@ -223,7 +226,7 @@ const Header = ({ onAddNewAd }) => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.main_head}>
-      {isTokenGlobal ? ( // Проверка стейта из Redux
+      {isTokenGlobal ? (
           <div className={styles.main_buttons}>
             <button className={styles.main_button} onClick={openModalClickTwo}>Разместить объявление</button>
             <button className={styles.main_button} onClick={() => navigate('/profile')}>Личный кабинет</button>
@@ -340,6 +343,7 @@ const Header = ({ onAddNewAd }) => {
                         <span>Цена</span>
                         <div>
                           <input id='price' className={styles.modal_form_price} type='text' placeholder='Цена'/>
+                          <span className={styles.modal_rub}> ₽ </span>
                         </div>
                       </div>
                       <button type='button' onClick={handlePublish} className={`${styles.main_button} ${styles.save}`} disabled={!isTokenGlobal}>
