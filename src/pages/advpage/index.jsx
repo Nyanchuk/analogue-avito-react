@@ -96,7 +96,6 @@ export const Advpage = () => {
       try {
         const data = await getAllCommets(id);
         setComments(data);
-        console.log(data);
         const totalComments = data.length;
         setTotalComments(totalComments);
       } catch (error) {
