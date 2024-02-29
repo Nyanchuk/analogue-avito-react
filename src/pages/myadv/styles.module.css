@@ -1,3 +1,25 @@
+@keyframes blink {
+    0% {
+      border-color: #b4b4b4c4;
+    }
+    50% {
+      border-color: #e400003e;
+      background-color: #c2010126;
+    }
+    100% {
+      border-color: #b4b4b4c4;
+    }
+  }
+  .price_blink {
+    animation: blink 2s infinite;
+  }
+  .modal_rub {
+    position: absolute;
+    right: 10%;
+    top: 45%;
+    font-size: 24px;
+    color: #009ee4;
+  }
 .conteiners{
     width: 100%;
     max-width: 1160px;
@@ -146,6 +168,7 @@
     font-weight: 500;
 }
 .modal_form_block {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: start;

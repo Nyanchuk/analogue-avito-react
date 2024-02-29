@@ -116,14 +116,17 @@ export const Advpage = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [modalRef]);
-  // Обновление токена + создание нового комментария
+  // Создание нового комментария
   const setCommentUser = (id) => {
-    const text = document.getElementById('comment').value;
-    const errors = [];
+    const textInput = document.getElementById('comment');
+    const text = textInput.value;
     switch(true) {
       case !text:
-        errors.push('Введите текст!');
-        break;
+        textInput.classList.add(styles.price_blink);
+          setTimeout(() => {
+            textInput.classList.remove(styles.price_blink);
+          }, 2000);
+          break;
       default:
         setError('');
         getNewCommentText(id, text)

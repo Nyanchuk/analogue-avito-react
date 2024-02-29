@@ -68,16 +68,19 @@ export const Myprofile = ({ isAuthenticated }) => {
     const surname = document.getElementById('surname').value;
     const phone = document.getElementById('phone').value;
     const city = document.getElementById('city').value;
-    const phonePattern = /^(\+\d{1,3})?\d{10}$/;
-    const errors = [];
     switch(true) {
       case !name:
-        errors.push('Введите имя!');
-        nameInput.style.borderColor = '#f56a6aaa';
-        break;
-      case !phone.match(phonePattern):
-        errors.push('Введите корректный номер телефона!');
-        phoneInput.style.borderColor = '#f56a6aaa';
+        nameInput.classList.add(styles.price_blink);
+          setTimeout(() => {
+            nameInput.classList.remove(styles.price_blink);
+          }, 2000);
+          break;
+      case !phone || isNaN(phone):
+        phoneInput.classList.add(styles.price_blink);
+          setTimeout(() => {
+            phoneInput.classList.remove(styles.price_blink);
+          }, 2000);
+          break;
         break;
       default:
         setError('');

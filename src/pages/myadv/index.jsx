@@ -52,7 +52,6 @@ export const Myadv = ({ isAuthenticated }) => {
       navigate("/");
     }
   }, [isAuthenticated, navigate]);
-
   // Событие при наведении
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -168,14 +167,17 @@ export const Myadv = ({ isAuthenticated }) => {
 
     fetchData();
   }, [id]);
-  // Обновление токена + создание нового комментария
+  // Cоздание нового комментария
   const setCommentUser = (id) => {
-    const text = document.getElementById("comment").value;
-    const errors = [];
+    const textInput = document.getElementById('comment');
+    const text = textInput.value;
     switch (true) {
       case !text:
-        errors.push("Введите текст!");
-        break;
+        textInput.classList.add(styles.price_blink);
+          setTimeout(() => {
+            textInput.classList.remove(styles.price_blink);
+          }, 2000);
+          break;
       default:
         setError("");
         getNewCommentText(id, text)
@@ -245,28 +247,34 @@ export const Myadv = ({ isAuthenticated }) => {
       setPhotos(newPhotos);
     }
   };
-  // Новое объявление
+  // Редактировать объявление
   const handlePublish = async (id) => {
     const title = document.getElementById('title').value;
     const description = document.getElementById('description').value;
-    const price = document.getElementById('price').value;
+    const priceInput = document.getElementById('price');
+    const price = priceInput.value;
     const filteredPhotos = photos.filter((photo) => photo.url.startsWith('data:image'));
-    // Отправка текста объявления
-    const adData = await setUpdateAds(id, title, description, price);
-    const adId = adData.id;
-    // Отправка изображений к объявлению
-    const result = await uploadImages(adId, filteredPhotos);
-    if (imagesToDelete.length > 0) {
-      try {
-        for (const image of imagesToDelete) {
-          await deleteImageAds(id, image.url);
-        }
-        // Очистка списка изображений для удаления
-        setImagesToDelete([]);
-      } catch (error) {
-        // Обработка ошибки удаления изображений
-      }}
-        closeModal();
+    switch(true) {
+      case !price || isNaN(price):
+        priceInput.classList.add(styles.price_blink);
+          setTimeout(() => {
+            priceInput.classList.remove(styles.price_blink);
+          }, 2000);
+          break;
+      default:
+        const adData = await setUpdateAds(id, title, description, price);
+        const adId = adData.id;
+        const result = await uploadImages(adId, filteredPhotos);
+        if (imagesToDelete.length > 0) {
+          try {
+            for (const image of imagesToDelete) {
+              await deleteImageAds(id, image.url);
+            }
+            setImagesToDelete([]);
+          } catch (error) {
+          }}
+          closeModal();
+      }
   };
 
   return (
@@ -510,9 +518,10 @@ export const Myadv = ({ isAuthenticated }) => {
                       id="price"
                       className={styles.modal_form_price}
                       type="text"
-                      placeholder="Название продукта"
+                      placeholder="Цена"
                       defaultValue={product.price} 
-                    />                 
+                    />
+                    <span className={styles.modal_rub}> ₽ </span>             
                   </div>
                 </div>
                 <button type="button" onClick={() => {handlePublish(id)}} className={`${styles.main_button} ${styles.save}`}>
