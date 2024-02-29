@@ -34,7 +34,11 @@ export const refreshAccessToken = async () => {
       throw new Error("Токен не был получен после обновления");
     }
   } catch (error) {
-    throw error;
+    if (error.response && error.response.status === 401) {
+      return; 
+    } else {
+      throw error;
+    }
   }
 };
 // Обновление пароля
@@ -136,10 +140,8 @@ export const getMyProfile = async () => {
       throw new Error("Failed to fetch data");
     }
   } catch (error) {
-    if (
-      error.response &&
-      (error.response.status === 422 || error.response.status === 500)
-    ) {
+    if (error.response && error.response.status === 401) {
+      return; 
     } else {
       throw error;
     }
@@ -239,13 +241,17 @@ export const getNewCommentText = async (id, text) => {
       const data = await response.json();
       return data;
     } else if (response.status === 401) {
-      await refreshAccessToken(); // Обновляем токен
-      return await getNewCommentText(id, text); // Повторно вызываем функцию с новым токеном
+      await refreshAccessToken();
+      return await getNewCommentText(id, text);
     } else {
       throw new Error("Ошибка при отправке данных на сервер");
     }
   } catch (error) {
-    throw new Error(error.message);
+    if (error.response && error.response.status === 401) {
+      return; 
+    } else {
+      throw error;
+    }
   }
 };
 // Загрузка аватара пользователя
@@ -271,7 +277,11 @@ export const uploadUserPhoto = async (formData) => {
       throw new Error("Failed to fetch data");
     }
   } catch (error) {
-    throw new Error(error.message);
+    if (error.response && error.response.status === 401) {
+      return; 
+    } else {
+      throw error;
+    }
   }
 };
 // Отправка обвления без фото
@@ -301,7 +311,11 @@ export const getNewAdWithoutPhotos = async ({title, description, price}) => {
       throw new Error("Ошибка при отправке данных на сервер");
     }
   } catch (error) {
-    throw new Error(error.message);
+    if (error.response && error.response.status === 401) {
+      return; 
+    } else {
+      throw error;
+    }
   }
 };
 // Отправка нового объявления
@@ -327,7 +341,11 @@ export const getNewMyAds = async (title, description, price ) => {
       throw new Error("Ошибка при отправке данных на сервер");
     }
   } catch (error) {
-    throw new Error(error.message);
+    if (error.response && error.response.status === 401) {
+      return; 
+    } else {
+      throw error;
+    }
   }
 };
 // Функция для отправки изображений на сервер
@@ -355,7 +373,11 @@ export const uploadImages = async (adId, photos) => {
     const results = await Promise.all(promises);
     return results;
   } catch (error) {
-    throw new Error(error.message);
+    if (error.response && error.response.status === 401) {
+      return; 
+    } else {
+      throw error;
+    }
   }
 };
 
@@ -396,10 +418,8 @@ export const setUpdateUser = async ({
       throw new Error("Failed to update user data");
     }
   } catch (error) {
-    if (
-      error.response &&
-      (error.response.status === 422 || error.response.status === 500)
-    ) {
+    if (error.response && error.response.status === 401) {
+      return; 
     } else {
       throw error;
     }
@@ -432,7 +452,11 @@ export const setUpdateAds = async ( id, title, description, price ) => {
       throw new Error("Ошибка при отправке данных на сервер");
     }
   } catch (error) {
-    throw new Error(error.message);
+    if (error.response && error.response.status === 401) {
+      return; 
+    } else {
+      throw error;
+    }
   }
 };
 
@@ -459,7 +483,11 @@ export const deleteItemAds = async (id) => {
       throw new Error("Ошибка при отправке данных на сервер");
     }
   } catch (error) {
-    throw new Error(error.message);
+    if (error.response && error.response.status === 401) {
+      return; 
+    } else {
+      throw error;
+    }
   }
 };
 // Удаление картинки из объявления
@@ -485,6 +513,10 @@ export const deleteImageAds = async ( id, fileUrl ) => {
       throw new Error("Ошибка при отправке данных на сервер");
     }
   } catch (error) {
-    throw new Error(error.message);
+    if (error.response && error.response.status === 401) {
+      return; 
+    } else {
+      throw error;
+    }
   }
 };
