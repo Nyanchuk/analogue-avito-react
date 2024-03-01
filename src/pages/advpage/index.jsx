@@ -125,7 +125,7 @@ export const Advpage = () => {
   // Создание нового комментария
   const setCommentUser = (id) => {
     const textInput = document.getElementById('comment');
-    const text = textInput.value;
+    const text = textInput.value.trim();
     switch(true) {
       case !text:
         textInput.classList.add(styles.price_blink);
@@ -177,7 +177,7 @@ export const Advpage = () => {
           </div>
             <div className={styles.main__info_text}>
                     <div className={styles.main__info_text_product}>
-                      <div className={styles.main__h3}>{product.title}</div>
+                      <div className={styles.main__h3}>{product.title ? product.title : "Нет названия"}</div>
                       <div className={styles.main__detailed}>
                         <span>{product.formattedDate}</span>
                         <span>{product.user.city}</span>

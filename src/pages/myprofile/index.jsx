@@ -64,10 +64,10 @@ export const Myprofile = ({ isAuthenticated }) => {
     const phoneInput = document.getElementById('phone');
     const role = 'user';
     const email = users.email;
-    const name = document.getElementById('name').value;
-    const surname = document.getElementById('surname').value;
-    const phone = document.getElementById('phone').value;
-    const city = document.getElementById('city').value;
+    const name = document.getElementById('name').value.trim();
+    const surname = document.getElementById('surname').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const city = document.getElementById('city').value.trim();
     switch(true) {
       case !name:
         nameInput.classList.add(styles.price_blink);

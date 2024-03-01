@@ -22,7 +22,7 @@ function ProductCard({ product, editLink }) {
           )}
         </div>
           <div className={styles.card__content}>
-            <Link to={editLink ? editLink : `/product/${product.id}`} className={styles.card__title}>{product.title}</Link>
+            <Link to={editLink ? editLink : `/product/${product.id}`} className={styles.card__title}><div className={styles.main__h3}>{product.title ? product.title : "Нет названия"}</div></Link>
             <p className={styles.card__price}>{product.price} ₽</p>
             <p className={styles.card__place}>{product.user.city}</p>
             <p className={styles.card__date}>{formattedDate}</p>

@@ -6,7 +6,7 @@ import logo from '../../img/main_img/logo_modal.svg'
 import add_photo from '../../img/main_img/add-image.png'
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getMyProfile, getNewAdWithoutPhotos, getNewMyAds, sendAuthenticationToServer, sendRegistrationDataToServer, uploadImages } from '../../api';
+import { getNewMyAds, sendAuthenticationToServer, sendRegistrationDataToServer, uploadImages } from '../../api';
 import { setTokenExists } from '../../store/actions/creators/productCreators';
 
 const Header = ({ onAddNewAd }) => {
@@ -80,13 +80,13 @@ const Header = ({ onAddNewAd }) => {
   // Регистрация
   const handleRegisterUser = () => {
     const role = 'user';
-    const email = document.getElementById('email').value;
+    const email = document.getElementById('email').value.trim();
     const newPassword = document.getElementById('password').value;
     const repeatPassword = document.getElementById('repeatPassword').value;
-    const name = document.getElementById('name').value;
-    const surname = document.getElementById('surname').value;
-    const phone = document.getElementById('phone').value;
-    const city = document.getElementById('city').value;
+    const name = document.getElementById('name').value.trim();
+    const surname = document.getElementById('surname').value.trim();
+    const phone = document.getElementById('phone').value.trim(); 
+    const city = document.getElementById('city').value.trim();
     const emailFormat = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
     const phonePattern = /^\d+$/;
     switch (true) {
@@ -133,8 +133,8 @@ const Header = ({ onAddNewAd }) => {
   };
   // Авторизация
   const handleAuthorizUser = ()=> {
-    const email = document.getElementById('email').value;
-    const newPassword = document.getElementById('password').value;
+    const email = document.getElementById('email').value.trim();
+    const newPassword = document.getElementById('password').value.trim();
     switch(true) {
       case !email:
         setError('Введите email');
@@ -196,10 +196,10 @@ const Header = ({ onAddNewAd }) => {
   };
   // Новое объявление
   const handlePublish = async () => {
-    const title = document.getElementById('title').value;
-    const description = document.getElementById('description').value;
+    const title = document.getElementById('title').value.trim();
+    const description = document.getElementById('description').value.trim();
     const priceInput = document.getElementById('price');
-    const price = priceInput.value;
+    const price = priceInput.value.trim();
     switch(true) {
       case !price || isNaN(price):
         priceInput.classList.add(styles.price_blink);
@@ -215,6 +215,7 @@ const Header = ({ onAddNewAd }) => {
           onAddNewAd();
           closeModal();
         }
+        closeModal();
     } 
   };
   // Удаление фото

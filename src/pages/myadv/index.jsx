@@ -174,7 +174,7 @@ export const Myadv = ({ isAuthenticated }) => {
   // Cоздание нового комментария
   const setCommentUser = (id) => {
     const textInput = document.getElementById('comment');
-    const text = textInput.value;
+    const text = textInput.value.trim();
     switch (true) {
       case !text:
         textInput.classList.add(styles.price_blink);
@@ -253,10 +253,10 @@ export const Myadv = ({ isAuthenticated }) => {
   };
   // Редактировать объявление
   const handlePublish = async (id) => {
-    const title = document.getElementById('title').value;
-    const description = document.getElementById('description').value;
+    const title = document.getElementById('title').value.trim();
+    const description = document.getElementById('description').value.trim();
     const priceInput = document.getElementById('price');
-    const price = priceInput.value;
+    const price = priceInput.value.trim();
     const filteredPhotos = photos.filter((photo) => photo.url.startsWith('data:image'));
     switch(true) {
       case !price || isNaN(price):
@@ -324,7 +324,7 @@ export const Myadv = ({ isAuthenticated }) => {
               </div>
               <div className={styles.main__info_text}>
                 <div className={styles.main__info_text_product}>
-                  <div className={styles.main__h3}>{product.title}</div>
+                  <div className={styles.main__h3}>{product.title ? product.title : "Нет названия"}</div>
                   <div className={styles.main__detailed}>
                     <span>{product.formattedDate}</span>
                     <span>{product.user.city}</span>
@@ -386,7 +386,7 @@ export const Myadv = ({ isAuthenticated }) => {
             </div>
             <div className={styles.main__container}>
               <div className={styles.main__h3}>Описание товара</div>
-              <div className={styles.main__content}>{product.description}</div>
+                {product.description ? product.description : "Нет подробной информации"}
             </div>
           </div>
         ))}
