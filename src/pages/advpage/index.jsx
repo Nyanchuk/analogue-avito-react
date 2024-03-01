@@ -6,7 +6,7 @@ import user from '../../img/main_img/photo_user.png';
 import exits from '../../img/main_img/exit.svg'
 import hover from '../../img/main_img/hover_exit.svg'
 import notImage from '../../img/main_img/no-pictures.png'
-import { Link, useParams } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import { getAds, getNewCommentText } from '../../api';
 import { getAllCommets } from '../../api';
 import { useSelector } from 'react-redux';
@@ -16,6 +16,7 @@ export const Advpage = () => {
   const isTokenGlobal = useSelector(state => state.product.tokenExists);
   // Получаем id объявления
   const { id } = useParams();
+  const navigate = useNavigate();
   // Стейт для изменения контента
   const [product, setProduct] = useState({ text: '' });
   // Стейт для открытия модального окна
@@ -62,7 +63,7 @@ export const Advpage = () => {
     ];
   
     const date = new Date(dateString);
-    const day = date.getDate(); // Используем getDate() для получения числа дня месяца
+    const day = date.getDate();
     const month = months[date.getMonth()];
     const year = date.getFullYear();
 
@@ -73,23 +74,28 @@ export const Advpage = () => {
     const fetchData = async () => {
       try {
         const data = await getAds(id);
-        setProducts([data]);
-        const createdDate = new Date(data.created_on);
-        const formattedDate = `${createdDate.toLocaleDateString('ru-RU')} ${createdDate.toLocaleTimeString('ru-RU', {hour: '2-digit', minute: '2-digit'})}`;
-        setProducts(prevProducts => {
-          return prevProducts.map(product => ({
-            ...product,
-            formattedDate: formattedDate
-          }));
-        });
-        const formattedSellsDate = formatDate(data.user.sells_from);
-        setFormattedSellsFromDate(formattedSellsDate);
+        if (data.error === "Ad not found") {
+          navigate("/404"); 
+        } else {
+          setProducts([data]);
+          const createdDate = new Date(data.created_on);
+          const formattedDate = `${createdDate.toLocaleDateString('ru-RU')} ${createdDate.toLocaleTimeString('ru-RU', {hour: '2-digit', minute: '2-digit'})}`;
+          setProducts(prevProducts => {
+            return prevProducts.map(product => ({
+              ...product,
+              formattedDate: formattedDate
+            }));
+          });
+          const formattedSellsDate = formatDate(data.user.sells_from);
+          setFormattedSellsFromDate(formattedSellsDate);
+        }
       } catch (error) {
+        console.error(error);
       }
     };
 
     fetchData();
-  }, [id]);
+  }, [id, navigate]);
   // Получение всех комментариев
   useEffect(() => {
     const fetchData = async () => {
@@ -193,9 +199,9 @@ export const Advpage = () => {
                         <div className={styles.main__h3}>{product.price} ₽</div>
                         <div className={styles.main__product_buttons}>
                         <div className={`${styles.main_button} ${styles.update}`} onClick={() => setShowPhoneNumber(true)}>
-                          Показать телефон <br /> 
+                          {product.user.phone ? "Показать телефон" : "Нет телефона"} <br /> 
                           <span className={styles.main_button_num}>
-                          {showPhoneNumber ? (product.user.phone ? product.user.phone : '') : (product.user.phone ? `${product.user.phone.substring(0, 2)} ❉ ❉ ❉ ❉ ❉ ❉ ❉ ❉ ❉` : '')}
+                            {showPhoneNumber ? (product.user.phone ? product.user.phone : '') : (product.user.phone ? `${product.user.phone.substring(0, 2)} ❉ ❉ ❉ ❉ ❉ ❉ ❉ ❉ ❉` : '')}
                           </span>
                         </div>
                         </div>
@@ -216,7 +222,7 @@ export const Advpage = () => {
             <div className={styles.main__container}>
                   <div className={styles.main__h3}>Описание товара</div>
                   <div className={styles.main__content}>
-                    {product.description}
+                    {product.description ? product.description : "Нет подробной информации"}
                   </div>
             </div>
           </div>

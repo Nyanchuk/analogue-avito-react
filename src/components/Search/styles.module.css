@@ -1,11 +1,22 @@
 .main_search {
+  position: relative;
   height: 140px;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 10px;
 }
-
+.main_search_nothing {
+  position: absolute;
+  top:  170%;
+  left: 0;
+  font-size: 22px;
+  padding: 20px;
+  color: #00e444;
+  border: 3px dashed transparent;
+  background-color: #00e44435;
+  border-radius: 20px;
+}
 .main_block_search {
   outline: none;
   margin-left: 25px;

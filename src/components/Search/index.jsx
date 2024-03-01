@@ -1,7 +1,7 @@
 import styles from './styles.module.css';
 import logo from '../../img/main_img/Logo.svg';
 
-const Search = ({ onSearchInputChange, onSearchButtonClick, searchTerm, onShowAllClick}) => {
+const Search = ({ onSearchInputChange, onSearchButtonClick, searchTerm, onShowAllClick, showNoResultsMessage }) => {
   return (
     <div className={styles.main_search}>
       <img src={logo} alt='logo'/>
@@ -13,6 +13,7 @@ const Search = ({ onSearchInputChange, onSearchButtonClick, searchTerm, onShowAl
       />
       <button className={styles.main_block_search_button} onClick={onSearchButtonClick}>Найти</button>
       <button className={styles.main_block_return_button} onClick={onShowAllClick} >Все объявления</button>
+      {showNoResultsMessage && <p className={styles.main_search_nothing}>Нет результатов</p>}
     </div>
   );
 }

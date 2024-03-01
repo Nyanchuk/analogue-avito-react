@@ -3,7 +3,7 @@ import styles from './styles.module.css';
 import { Link } from 'react-router-dom';
 import notImage from '../../img/main_img/no-pictures.png'
 
-function ProductCard({ product, editLink  }) {
+function ProductCard({ product, editLink }) {
   // Достаем первую картинку продукта
   const firstImageUrl = product.images.length > 0 ? product.images[0].url : '';
   // Достаем и преобразуем дату объявления

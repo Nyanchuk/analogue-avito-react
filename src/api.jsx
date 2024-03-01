@@ -97,6 +97,9 @@ export const getAds = async (id) => {
     const response = await fetch(`${host}ads/${id}`, {
       method: "GET",
     });
+    if (response.status === 404) {
+      return { error: "Ad not found" }; // Возвращаем объект с сообщением об ошибке
+    }
     if (response.ok) {
       return await response.json();
     } else {

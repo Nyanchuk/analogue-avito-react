@@ -143,24 +143,28 @@ export const Myadv = ({ isAuthenticated }) => {
     const fetchData = async () => {
       try {
         const data = await getAds(id);
-        setProducts([data]);
-        const imageObjects = data.images;
-        setPhotos(imageObjects);
-        const createdDate = new Date(data.created_on);
-        const formattedDate = `${createdDate.toLocaleDateString(
-          "ru-RU"
-        )} ${createdDate.toLocaleTimeString("ru-RU", {
-          hour: "2-digit",
-          minute: "2-digit",
-        })}`;
-        setProducts((prevProducts) => {
-          return prevProducts.map((product) => ({
-            ...product,
-            formattedDate: formattedDate,
-          }));
-        });
-        const formattedSellsDate = formatDate(data.user.sells_from);
-        setFormattedSellsFromDate(formattedSellsDate);
+        if (data.error === "Ad not found") {
+          navigate("/404"); 
+        } else {
+          setProducts([data]);
+          const imageObjects = data.images;
+          setPhotos(imageObjects);
+          const createdDate = new Date(data.created_on);
+          const formattedDate = `${createdDate.toLocaleDateString(
+            "ru-RU"
+          )} ${createdDate.toLocaleTimeString("ru-RU", {
+            hour: "2-digit",
+            minute: "2-digit",
+          })}`;
+          setProducts((prevProducts) => {
+            return prevProducts.map((product) => ({
+              ...product,
+              formattedDate: formattedDate,
+            }));
+          });
+          const formattedSellsDate = formatDate(data.user.sells_from);
+          setFormattedSellsFromDate(formattedSellsDate);
+        }
       } catch (error) {
       }
     };

@@ -4,7 +4,7 @@ import ProductCard from '../../components/ProductCard';
 import { useEffect, useState } from 'react';
 import { getAllAds } from '../../api';
 import Return from '../../components/Return';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import user from '../../img/main_img/photo_user.png';
 
 export const Seller = () => {
@@ -13,6 +13,7 @@ export const Seller = () => {
     const [showPhoneNumber, setShowPhoneNumber] = useState(false);
     // Получени id объявления
     const { sellerId } = useParams();
+    const navigate = useNavigate();
 
     // Обработка даты
     function formatDate(dateString) {
@@ -22,7 +23,7 @@ export const Seller = () => {
         ];
     
         const date = new Date(dateString);
-        const day = date.getDate(); // Используем getDate() для получения числа дня месяца
+        const day = date.getDate(); 
         const month = months[date.getMonth()];
         const year = date.getFullYear();
 
@@ -41,7 +42,10 @@ export const Seller = () => {
       fetchData(); 
     }, []); 
 
-    const filteredProducts = products.filter(product => product.user.id === Number(sellerId));
+  const filteredProducts = products.filter(product => product.user.id === Number(sellerId));
+  if (filteredProducts.length === 0) {
+    navigate("/404");
+  }
 
   return (
     <div className={styles.container}>
