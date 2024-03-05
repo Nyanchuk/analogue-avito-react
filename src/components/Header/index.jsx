@@ -47,6 +47,7 @@ const Header = ({ onAddNewAd }) => {
     setIsOpenFormRegistration(false);
     setError('');
     setOpenPopup(false);
+    setPhotos([]);
   }
   // Событие при наведении
   const handleMouseEnter = () => {
@@ -333,7 +334,10 @@ const handleRemovePhoto = (index) => {
                         <div className={styles.main__info_addition}>
 
                         {photos.map((photo, index) => (
-                          <img title='Кликните, чтобы удалить фото' key={index} onClick={() => handleRemovePhoto(index)} src={photo.url} alt={`Photo ${index}`} className={styles.addition}/>
+                          <div className={styles.deleteImg} key={index}>
+                            <img title='Кликните, чтобы удалить фото' src={photo.url} alt={`Photo ${index}`} className={styles.addition}/>
+                            <button className={styles.but_deleteImg}  onClick={() => handleRemovePhoto(index)}>УДАЛИТЬ</button>
+                          </div>
                         ))}
                         {[...Array(Math.max(0, 5 - photos.length))].map((_, index) => (
                         <div key={index}>
