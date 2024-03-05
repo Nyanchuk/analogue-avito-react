@@ -198,12 +198,14 @@ export const Advpage = () => {
                     <div className={styles.main__info_text_buttons}>
                         <div className={styles.main__h3}>{product.price} ₽</div>
                         <div className={styles.main__product_buttons}>
-                        <div className={`${styles.main_button} ${styles.update}`} onClick={() => setShowPhoneNumber(true)}>
-                          {product.user.phone ? "Показать телефон" : "Нет телефона"} <br /> 
-                          <span className={styles.main_button_num}>
-                            {showPhoneNumber ? (product.user.phone ? product.user.phone : '') : (product.user.phone ? `${product.user.phone.substring(0, 2)} ❉ ❉ ❉ ❉ ❉ ❉ ❉ ❉ ❉` : '')}
-                          </span>
-                        </div>
+                        <div onClick={() => setShowPhoneNumber(!showPhoneNumber)} className={`${styles.main_button} ${styles.update}`}>
+                        <span>
+                          {product.user.phone ? (showPhoneNumber ? "Скрыть номер" : `Показать номер`) : "Номер не указан"}
+                        </span>
+                        <span className={styles.main_button_num}>
+                          {product.user.phone ? (showPhoneNumber ? product.user.phone : `${product.user.phone.substring(0, 2)} ❉ ❉ ❉ ❉ ❉ ❉ ❉ ❉ ❉`) : "-"}
+                        </span>
+                      </div>
                         </div>
                     </div>
                     <div className={styles.main__info_text_seller}>

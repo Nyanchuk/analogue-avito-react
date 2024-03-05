@@ -105,7 +105,7 @@ const Header = ({ onAddNewAd }) => {
       case !name:
         setError('Введите имя');
         break;
-      case !phone.match(phonePattern):
+      case phone.match(phonePattern):
         setError('Введите корректный номер телефона!');
         break;
       default:
@@ -196,17 +196,25 @@ const Header = ({ onAddNewAd }) => {
   };
   // Новое объявление
   const handlePublish = async () => {
-    const title = document.getElementById('title').value.trim();
+    const titleInput = document.getElementById('title');
+    const title = titleInput.value.trim();
     const description = document.getElementById('description').value.trim();
     const priceInput = document.getElementById('price');
     const price = priceInput.value.trim();
     switch(true) {
+      case !title:
+        titleInput.classList.add(styles.price_blink);
+          setTimeout(() => {
+            titleInput.classList.remove(styles.price_blink);
+          }, 2000);
+          break;
       case !price || isNaN(price):
         priceInput.classList.add(styles.price_blink);
           setTimeout(() => {
             priceInput.classList.remove(styles.price_blink);
           }, 2000);
           break;
+      
       default:
         const adData = await getNewMyAds(title, description, price);
         const adId = adData.id;

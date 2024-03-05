@@ -15,6 +15,8 @@ export const Myprofile = ({ isAuthenticated }) => {
   const [products, setProducts] = useState([]);
   // Хранение юзера
   const [users, setUsers] = useState([]);
+  // Хранение юзера
+  const [tempName, setTempName] = useState('');
   // Стейт для хранения ошибок
   const [error, setError] = useState('');
   // Стейт для окна смены пароля
@@ -47,6 +49,7 @@ export const Myprofile = ({ isAuthenticated }) => {
         // Получение токена + получение профиля юзера
         const userProfile = await getMyProfile();
         setUsers(userProfile);
+        setTempName(userProfile.name)
         // Получение всех объявлений
         const allAdsData = await getAllAds();
         const filteredProducts = allAdsData.filter(product => product.user.id === Number(userProfile.id));
@@ -75,13 +78,12 @@ export const Myprofile = ({ isAuthenticated }) => {
             nameInput.classList.remove(styles.price_blink);
           }, 2000);
           break;
-      case !phone || isNaN(phone):
+      case isNaN(phone):
         phoneInput.classList.add(styles.price_blink);
           setTimeout(() => {
             phoneInput.classList.remove(styles.price_blink);
           }, 2000);
           break;
-        break;
       default:
         setError('');
         nameInput.style.borderColor = '';
@@ -89,6 +91,10 @@ export const Myprofile = ({ isAuthenticated }) => {
         setUpdateUser({ role, email, name, surname, phone, city })
         .then(() => {
           return getMyProfile();
+        })
+        .then((updatedProfile) => {
+          setUsers(updatedProfile);
+          setTempName(updatedProfile.name)
         })
           .catch((error) => {
             setError('Произошла ошибка: ' + error.message);
@@ -178,6 +184,10 @@ export const Myprofile = ({ isAuthenticated }) => {
         });
     }
   }
+// Обработчик изменения имени
+const handleNameChange = (e) => {
+  setTempName(e.target.value); // Обновляем временное имя при вводе
+};
     return (
       <div>
      <Header onAddNewAd={fetchAndUpdateProducts} />
@@ -204,9 +214,9 @@ export const Myprofile = ({ isAuthenticated }) => {
                           <span>Имя</span>
                           <input 
                             id='name'
-                            value={users.name}
+                            value={tempName}
                             className={styles.main__name_input}
-                            onChange={(e) => setUsers({...users, name: e.target.value})}
+                            onChange={handleNameChange}
                           />
                         </div>
                         <div className={styles.main__container_name}>

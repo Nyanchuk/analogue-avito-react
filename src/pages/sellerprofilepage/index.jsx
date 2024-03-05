@@ -67,11 +67,13 @@ export const Seller = () => {
                     <span className={styles.main__seller_name}>{product.user.name}</span>
                     <span>{product.user.city}</span>
                     <span>Продает товары с {formatDate(product.created_on)}</span>
-                    <div className={`${styles.main_button} ${styles.update}`} onClick={() => setShowPhoneNumber(true)}>
-                      Показать телефон <br /> 
-                      <span className={styles.main_button_num}>
-                        {showPhoneNumber ? product.user.phone : `${product.user.phone.substring(0, 2)} ❉ ❉ ❉ ❉ ❉ ❉ ❉ ❉ ❉`}
-                      </span>
+                    <div onClick={() => setShowPhoneNumber(!showPhoneNumber)} className={`${styles.main_button} ${styles.update}`}>
+                    <span>
+                      {product.user.phone ? (showPhoneNumber ? "Скрыть номер" : `Показать номер`) : "Номер не указан"}
+                    </span>
+                    <span className={styles.main_button_num}>
+                      {product.user.phone ? (showPhoneNumber ? product.user.phone : `${product.user.phone.substring(0, 2)} ❉ ❉ ❉ ❉ ❉ ❉ ❉ ❉ ❉`) : "-"}
+                    </span>
                     </div>
                   </div>
                 </div>
