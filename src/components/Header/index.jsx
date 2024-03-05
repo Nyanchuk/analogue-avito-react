@@ -226,11 +226,18 @@ const Header = ({ onAddNewAd }) => {
         closeModal();
     } 
   };
-  // Удаление фото
-  const handleRemovePhoto = (index) => {
-    const newPhotos = photos.filter((_, i) => i !== index);
-    setPhotos(newPhotos);
-  };
+
+// Удаление фото
+const handleRemovePhoto = (index) => {
+  const newPhotos = photos.filter((_, i) => i !== index);
+  setPhotos(newPhotos);
+
+  // Очистка значения поля ввода типа "file"
+  const fileInputs = document.querySelectorAll('input[type="file"]');
+  if (fileInputs[index]) {
+    fileInputs[index].value = ''; // Очищаем значение поля ввода
+  }
+};
 
   return (
     <div className={styles.wrapper}>
@@ -326,7 +333,7 @@ const Header = ({ onAddNewAd }) => {
                         <div className={styles.main__info_addition}>
 
                         {photos.map((photo, index) => (
-                          <img key={index} onClick={() => handleRemovePhoto(index)} src={photo.url} alt={`Photo ${index}`} className={styles.addition}/>
+                          <img title='Кликните, чтобы удалить фото' key={index} onClick={() => handleRemovePhoto(index)} src={photo.url} alt={`Photo ${index}`} className={styles.addition}/>
                         ))}
                         {[...Array(Math.max(0, 5 - photos.length))].map((_, index) => (
                         <div key={index}>
